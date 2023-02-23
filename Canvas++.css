@@ -1,0 +1,48 @@
+.pop-up {
+    display: block;
+    position: relative;
+    width: 400px;
+    height: 400px;
+    background: linear-gradient(#555, #222);
+    color: #fffc;
+    text-align: center;
+    font-size: 12px;
+    font-family: 'Helvetica';
+    text-shadow: 2px 2px 2px #0004;
+}
+
+.tab {
+    display: inline-block;
+    width: calc(100% / 3 - 8px);
+    background: linear-gradient(#fff3, #fff1);
+    border: 2px solid #0008;
+    transition: all 0.2s ease-in-out;
+}
+.tab:hover {
+    background: linear-gradient(#4c48, #2828);
+}
+
+.display {
+    display: block;
+    position: absolute;
+    background: #0004;
+    top: 7rem;
+    width: 100%;
+    height: calc(100% - 7rem);
+}
+
+h2 {
+    display: block;
+    padding-top: 16px;
+    font-size: 18px;
+}
+
+h3 {
+    display: block;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+p {
+    font-size: 12px;
+}

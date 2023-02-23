@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<title>Online HTML Editor</title>
+
+<!-- CSS Styles -->
+<head>
+    <link rel="stylesheet" href="Canvas++.css">
+</head>
+
+<body>
+
+    <!-- Popup Window -->
+    <div id="pop-up" class="pop-up">
+
+        <!-- Title -->
+        <h2>Canvas++</h2>
+
+        <!-- Tabs -->
+        <div class="tab" onClick="showTab(1)">
+            <h3>Assignments</h3>
+        </div>
+        <div class="tab" onClick="showTab(2)">
+            <h3>Notifications</h3>
+        </div>
+        <div class="tab" onClick="showTab(3)">
+            <h3>Grade Calc</h3>
+        </div>
+
+        <!-- Assignment Display -->
+        <div id="tab1" class="display">
+            <p>Assignment display.</p>
+        </div>
+
+        <!-- Notification Display -->
+        <div id="tab2" class="display" style="display: none">
+            <p>Notification display.</p>
+
+            <!-- Email Toggle -->
+            <label id="email-label">Send emails: </label>
+            <select id="email-toggle">
+                <option value="true">Yes</option>
+                <option value="false" selected>No</option>
+            </select>
+        </div>
+
+        <!-- Grade Calculator -->
+        <div id="tab3" class="display" style="display: none">
+            <p>Grade calculator.</p>
+        </div>
+    </div>
+
+    <!-- Javascript -->
+    <script src="Canvas++.js"></script>
+</body>
+
+</html>
