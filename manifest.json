@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "Canvas++ Prototype",
+  "version": "1.0.0",
+  "action": {
+    "default_popup": "Canvas++.html" 
+  },
+  "content_scripts": [
+    {
+      "js": [
+        "Canvas++.js"
+      ],
+      "matches": [
+        "https://developer.chrome.com/docs/extensions/*"
+	]
+    }
+  ]
+}
