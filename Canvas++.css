@@ -26,7 +26,7 @@
     display: block;
     position: absolute;
     background: #0004;
-    top: 7rem;
+    top: 10rem;
     width: 100%;
     height: calc(100% - 7rem);
 }
