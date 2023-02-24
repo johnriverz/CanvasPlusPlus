@@ -2,6 +2,14 @@
 <html>
 <title>Canvas++</title>
 
+<!-- CANVAS++.html -->
+<!-- Wecome to our chrome extensions's main html page.
+
+NOTES FOR DEVELOPERS:
+1. Don't use any inline javascript functions on this .html file, they will throw errors in
+the chrome extension and it will not function properly. Use ids in this .html file and then reference 
+them in a .js file whenever you want to do something with javascript. -->
+
 <!-- CSS Styles -->
 
 <head>
@@ -23,10 +31,10 @@
         <div id="assignments-tab-btn" class="tab">
             <h3>Assignments</h3>
         </div>
-        <div id="notifications-tab-btn" class="tab" onClick="showTab(2)">
+        <div id="notifications-tab-btn" class="tab" >
             <h3>Notifications</h3>
         </div>
-        <div id="grade-calc-tab-btn" class="tab" onClick="showTab(3)">
+        <div id="grade-calc-tab-btn" class="tab">
             <h3>Grade Calc</h3>
         </div>
 
