@@ -1,3 +1,7 @@
+
+document.getElementById("notifications-tab-btn").onclick = function() {showTab(2)};
+
+
 function showTab(tabNum) {
     console.log(tabNum);
     for (var i = 1; i <= 3; i++) {
