@@ -1,6 +1,6 @@
-
+document.getElementById("assignments-tab-btn").onclick = function() {showTab(1)};
 document.getElementById("notifications-tab-btn").onclick = function() {showTab(2)};
-
+document.getElementById("grade-calc-tab-btn").onclick = function() {showTab(3)};
 
 function showTab(tabNum) {
     console.log(tabNum);
