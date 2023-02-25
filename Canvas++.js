@@ -61,21 +61,28 @@ document.getElementById("login-button").onclick = (async () => {
         // Handle error that occurred during storage initialization.
         console.log(e);
     }
-    // Get the canvas token from the 
+    // Get the canvas token from the user
     token = storageCache.token;
     example_url = "https://canvas.instructure.com/api/v1/courses?access_token=";
+    //other_url = "https://canvas.uoregon.edu/api/v1/users/self"
     // CORS_WORKAROUND_URL = important url that will prepend an
     // "Access-Control-Allow-Origin" onto the CANVAS API response's header
     // See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
     cors_workaround_url = "https://cors-anywhere.herokuapp.com";
-    post_login_url = cors_workaround_url + "/"+ example_url + token;
+    //post_login_url = cors_workaround_url + "/"+ example_url + token;
+    other_login_url = cors_workaround_url + "/"+ example_url + token;
     options = {
         method: 'GET'
+        //'Authorization': 'Bearer ${token}'
     };
-    fetch(post_login_url, options)
+    fetch(other_login_url, options)
+        .then(response => {
+            if(!response.ok)
+                throw new Error('Invalid Token. Try again.');
+            })
         .then(response => response.text()) // Read the response as text
-        .then(html => alert("Here's the response from the CANVAS API: " + html));
-
+        .then(html => alert("Here's the response from the CANVAS API: " + html))
+        
     // do stuff after the request here
 
 });
