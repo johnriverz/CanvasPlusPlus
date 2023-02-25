@@ -5,6 +5,9 @@
   "action": {
     "default_popup": "Canvas++.html" 
   },
+  "permissions": [
+    "storage"
+  ],
   "content_scripts": [
     {
       "js": [

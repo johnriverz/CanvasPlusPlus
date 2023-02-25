@@ -1,11 +1,14 @@
+
+// TAB AND TABS' DISPLAYS MANAGEMENT
+
+// Declare tab button variables
 document.getElementById("assignments-tab-btn").onclick = function() {showTab(1)};
 document.getElementById("notifications-tab-btn").onclick = function() {showTab(2)};
 document.getElementById("grade-calc-tab-btn").onclick = function() {showTab(3)};
 document.getElementById("access-token-tab-btn").onclick = function() {showTab(4)};
 
-
+// Function to hide or show one tab display at a time based on tab clicked
 function showTab(tabNum) {
-    console.log(tabNum);
     for (var i = 1; i <= 4; i++) {
         if (i == tabNum)
             document.getElementById("tab" + i).style.display = "block";
@@ -13,3 +16,66 @@ function showTab(tabNum) {
             document.getElementById("tab" + i).style.display = "none";
     }
 }
+
+// LOGIN WITH CANVAS API ACCESS KEY AND STORE IT IN CHROME EXTENSION
+// reference - background.js example on this page:
+// https://developer.chrome.com/docs/extensions/reference/storage/
+
+// Get data from chrome extensions local storage
+const storageCache = { count: 0, token: 0};
+// Asynchronously retrieve data from storage.local, then cache it.
+const initStorageCache = chrome.storage.local.get().then((items) => {
+    // Copy the data retrieved from storage into storageCache.
+    Object.assign(storageCache, items);
+    //TESTING
+    console.log("TEST: in get() - count is : " + storageCache.count + 
+    " and token is: " + storageCache.token);
+});
+
+
+// Save canvas access token to chrome extension on click of "submit" button
+document.getElementById("submit-token").onclick = (async () => {
+    console.log("TEST: the set count function ran")
+    try {
+        await initStorageCache;
+    } catch (e) {
+        // Handle error that occurred during storage initialization.
+        console.log(e);
+    }
+    // Get the canvas token from the submit token form
+    token = document.getElementById("canvas-token").value;
+    console.log("TEST: the token is " + token);
+    storageCache.token = token;
+    // Normal action handler logic.
+    storageCache.count++;
+    chrome.storage.local.set(storageCache);
+
+});
+
+// LOGIN - Use the access key to authorize your CANVAS API requests. Here's an example
+document.getElementById("login-button").onclick = (async () => {
+    console.log("TEST: the login button click function ran");
+    try {
+        await initStorageCache;
+    } catch (e) {
+        // Handle error that occurred during storage initialization.
+        console.log(e);
+    }
+    // Get the canvas token from the 
+    token = storageCache.token;
+    example_url = "https://canvas.instructure.com/api/v1/courses?access_token=";
+    // CORS_WORKAROUND_URL = important url that will prepend an
+    // "Access-Control-Allow-Origin" onto the CANVAS API response's header
+    // See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
+    cors_workaround_url = "https://cors-anywhere.herokuapp.com";
+    post_login_url = cors_workaround_url + "/"+ example_url + token;
+    options = {
+        method: 'GET'
+    };
+    fetch(post_login_url, options)
+        .then(response => response.text()) // Read the response as text
+        .then(html => alert("Here's the response from the CANVAS API: " + html));
+
+    // do stuff after the request here
+
+});
