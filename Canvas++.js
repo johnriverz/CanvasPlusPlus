@@ -79,7 +79,9 @@ document.getElementById("login-button").onclick = (async () => {
         .then(response => {
             if(!response.ok)
                 throw new Error('Invalid Token. Try again.');
-            })
+            else
+                return response;
+            }) 
         .then(response => response.text()) // Read the response as text
         .then(html => alert("Here's the response from the CANVAS API: " + html))
         
