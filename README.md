@@ -35,7 +35,7 @@ This <em>Canvas++</em> prototype has a basic user interface consisting of four d
 
 **Access Token Tab**
 1. Open the extension. Look at step 4 under the **Loading Chrome Extension** section if you forgot how to do so.
-2. Click on the "**Acess Token**" tab.
+2. Click on the "**Access Token**" tab.
 3. Paste your access token into the input box.
 4. Click "**Submit**".
 5. Click "**Login**".
