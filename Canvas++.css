@@ -31,6 +31,12 @@
     height: calc(100% - 7rem);
 }
 
+.test-api-output-box{
+    border: medium dashed green;
+    margin: 4px;
+    background: darkslategrey;
+}
+
 h2 {
     display: block;
     padding-top: 16px;

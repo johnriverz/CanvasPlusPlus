@@ -59,12 +59,12 @@ document.getElementById("login-button").onclick = (async () => {
         await initStorageCache;
     } catch (e) {
         // Handle error that occurred during storage initialization.
+        console.log("An error arose during the chrome storage initialization.")
         console.log(e);
     }
     // Get the canvas token from the user
     token = storageCache.token;
     example_url = "https://canvas.instructure.com/api/v1/courses?access_token=";
-    //other_url = "https://canvas.uoregon.edu/api/v1/users/self"
     // CORS_WORKAROUND_URL = important url that will prepend an
     // "Access-Control-Allow-Origin" onto the CANVAS API response's header
     // See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
@@ -75,15 +75,33 @@ document.getElementById("login-button").onclick = (async () => {
         method: 'GET'
         //'Authorization': 'Bearer ${token}'
     };
+    api_output_box = document.getElementById("test-api-output");
     fetch(other_login_url, options)
         .then(response => {
-            if(!response.ok)
-                throw new Error('Invalid Token. Try again.');
+            if(!response.ok){
+                console.log("An error arose when fetching from the Canvas API, its response is: ");
+                console.log(response);
+                api_output_box.innerHTML = ("Response code: " + response.status + " Response Text: " + response.statusText);
+                if (response.status == "403"){
+                    console.log("TEST: Displaying 403 cors fix string... ");
+                    fix_cors = `.\nThe 403 error often arises from CORS issues. Try fixing it by going 
+                    \n to this url and clicking 'Request temporary access to the demo server' button:\n
+                    https://cors-anywhere.herokuapp.com/corsdemo`;
+                    api_output_box.insertAdjacentHTML('beforeend', fix_cors);
+                }
+                if (response.status == "401"){
+                    console.log("TEST: Displaying 401 error text")
+                    wrong_token = `.\n The 401 'Unauthorized' error means your CANVAS access token is incorrect or missing.
+                    \n Try submitting your CANVAS API access token again, and if that doesn't work try another token.`
+                    api_output_box.insertAdjacentHTML('beforeend', wrong_token);
+                }
+                throw new Error('ERROR - manually caught: in fetch');
+            }
             else
                 return response;
             }) 
         .then(response => response.text()) // Read the response as text
-        .then(html => alert("Here's the response from the CANVAS API: " + html))
+        .then(response_text => api_output_box.innerHTML = response_text)
         
     // do stuff after the request here
 
