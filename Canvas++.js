@@ -66,6 +66,8 @@ document.getElementById("login-button").onclick = (async () => {
         await initStorageCache;
     } catch (e) {
         // Handle error that occurred during validation of token.
+        // Handle error that occurred during storage initialization.
+        console.log("An error arose during the chrome storage initialization.")
         console.log(e);
     }
 
