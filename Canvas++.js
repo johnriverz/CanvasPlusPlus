@@ -67,7 +67,7 @@ document.getElementById("login-button").onclick = (async () => {
     } catch (e) {
         // Handle error that occurred during validation of token.
         // Handle error that occurred during storage initialization.
-        console.log("An error arose during the chrome storage initialization.")
+        console.log("An error arose during the chrome storage initialization.");
         console.log(e);
     }
 
@@ -75,15 +75,16 @@ document.getElementById("login-button").onclick = (async () => {
     token = storageCache.token;
 
     // idk
-    initCall(token, listCourses);
-    //initCall(token, printDashboard);
+    initCall(token, getActiveCourses);
+    // initCall(token, printDashboard);
+    //initCall(token, getCourseIDs);
 })
 
 
 // initializes variables needed to access Canvas API via HTML requests
 function initCall(token, funcCall) {
     // validates calls to Canvas API for user's data
-    access_token = "?access_token="+token;
+    access_token = "access_token=" + token;
     
     // important url that will prepend an
     // "Access-Control-Allow-Origin" onto the CANVAS API response's header
@@ -91,10 +92,10 @@ function initCall(token, funcCall) {
     cors_url = "https://cors-anywhere.herokuapp.com/";
 
     // specify the host url
-    base_url = "https://canvas.instructure.com/api/v1"
+    base_url = "https://canvas.instructure.com/api/v1";
 
     // header(s)
-    header = {"Authorization" : "Bearer " + access_token}
+    header = {"Authorization" : "Bearer " + access_token};
 
     options = {
         method: 'GET'
@@ -108,7 +109,39 @@ function initCall(token, funcCall) {
 }
 
 
-function listCourses(postUrl, header, token) {
+function getActiveCourses(postUrl, header, token) {
+    url = postUrl + "/courses?enrollment_state=active&" + token;
+    //console.log(url);
+    var obj;
+    const courses = [];
+    const res = [];
+
+    try {
+        fetch(url, header)
+            .then(response => response.text()) // Read the response as text
+            .then(html => {
+                //alert("Here's the response from the CANVAS API: " + html);
+                obj = JSON.parse(html);
+                for(let i = 0; i < obj.length; i++) {
+                    courses.push(obj[i]);
+                }
+
+                for(let i = 0; i < courses.length; i++) {
+                    res.push(courses[i]);
+                }
+            })
+            .catch(e => {
+                console.log(e);
+            })
+    } catch(e) {
+        console.log(e);
+    }
+    //console.log(res);
+    return res;
+}
+
+
+function getAssignments(postUrl, header, token) {
     url = postUrl + "/courses" + token;
     //console.log(url);
     var obj;
@@ -132,7 +165,13 @@ function listCourses(postUrl, header, token) {
 }
 
 
-function printDashboard(postUrl, header, token) {
+function getCourseIDs(postUrl, header, token) {
+    obj = getActiveCourses(postUrl, header, token);
+    console.log(obj[0])
+}
+
+
+function dashboard(postUrl, header, token) {
     url = postUrl + "/dashboard/dashboard_cards" + token;
 
     try {
