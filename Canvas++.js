@@ -109,41 +109,14 @@ function initCall(token, funcCall) {
 }
 
 
-function getActiveCourses(postUrl, header, token) {
+async function getActiveCourses(postUrl, header, token) {
     url = postUrl + "/courses?enrollment_state=active&" + token;
-    //console.log(url);
-    var obj;
-    const courses = [];
-    const res = [];
-
     try {
-        fetch(url, header)
-            .then(response => response.text()) // Read the response as text
-            .then(html => {
-                //alert("Here's the response from the CANVAS API: " + html);
-                obj = JSON.parse(html);
-                for(let i = 0; i < obj.length; i++) {
-                    courses.push(obj[i]);
-                }
-
-                return courses;
-                // for(let i = 0; i < courses.length; i++) {
-                //     res.push(courses[i]);
-                // }
-            })
-            .then((courses) => {
-                //console.log(courses[1].slice("id"));
-                console.log(courses[1]["id"]);
-                return courses;
-            })
-            .catch(e => {
-                console.log(e);
-            })
+        const response = await fetch(url, header);
+        return response.json();
     } catch(e) {
         console.log(e);
     }
-    
-    //return courses;
 }
 
 
@@ -173,9 +146,9 @@ function getAssignments(postUrl, header, token) {
 
 function getCourseIDs(postUrl, header, token) {
     getActiveCourses(postUrl, header, token).then((courses) => {
+            console.log("TEST - testing getCourseIDs(), here we log courses w/in it: ");
             console.log(courses);
     });
-    //console.log(obj[0])
 }
 
 
