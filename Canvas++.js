@@ -75,9 +75,9 @@ document.getElementById("login-button").onclick = (async () => {
     token = storageCache.token;
 
     // idk
-    initCall(token, getActiveCourses);
+    //initCall(token, getActiveCourses);
     // initCall(token, printDashboard);
-    //initCall(token, getCourseIDs);
+    initCall(token, getCourseIDs);
 })
 
 
@@ -126,9 +126,15 @@ function getActiveCourses(postUrl, header, token) {
                     courses.push(obj[i]);
                 }
 
-                for(let i = 0; i < courses.length; i++) {
-                    res.push(courses[i]);
-                }
+                return courses;
+                // for(let i = 0; i < courses.length; i++) {
+                //     res.push(courses[i]);
+                // }
+            })
+            .then((courses) => {
+                //console.log(courses[1].slice("id"));
+                console.log(courses[1]["id"]);
+                return courses;
             })
             .catch(e => {
                 console.log(e);
@@ -136,8 +142,8 @@ function getActiveCourses(postUrl, header, token) {
     } catch(e) {
         console.log(e);
     }
-    //console.log(res);
-    return res;
+    
+    //return courses;
 }
 
 
@@ -166,8 +172,10 @@ function getAssignments(postUrl, header, token) {
 
 
 function getCourseIDs(postUrl, header, token) {
-    obj = getActiveCourses(postUrl, header, token);
-    console.log(obj[0])
+    getActiveCourses(postUrl, header, token).then((courses) => {
+            console.log(courses);
+    });
+    //console.log(obj[0])
 }
 
 
