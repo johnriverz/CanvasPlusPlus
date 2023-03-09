@@ -3,7 +3,8 @@
   "name": "Canvas++ Prototype",
   "version": "1.0.0",
   "action": {
-    "default_popup": "Canvas++.html" 
+    "default_popup": "Canvas++.html",
+    "default_icon": "icon.png"
   },
   "permissions": [
     "storage"
