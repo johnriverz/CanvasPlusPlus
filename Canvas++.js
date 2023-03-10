@@ -41,8 +41,8 @@ document.getElementById("submit-token").onclick = (async () => {
     }
 
     // Get the canvas token from the submit token form
-    access_token = document.getElementById("canvas-token").value;
-    console.log("TEST: the token is " + access_token);
+    let access_token = document.getElementById("canvas-token").value;
+    console.log("TEST - in submit_token onclick: the token is " + access_token);
     storageCache.token = access_token;
 
     // // Normal action handler logic.
@@ -55,7 +55,7 @@ document.getElementById("submit-token").onclick = (async () => {
 
 // SETUP MAIN VARIABLES - Initialize variables needed to access Canvas API via HTML requests
  // validates calls to Canvas API for user's data
- const global_access = "access_token=" + global_token;
+ //const global_access = "access_token=" + global_token;
  // important url that will prepend an
  // "Access-Control-Allow-Origin" onto the CANVAS API response's header
  // See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
@@ -94,67 +94,10 @@ function showTab(tabNum) {
 }
 
 
-
 /* LOGIN - Use the access key to authorize your CANVAS API requests. Here's an example: */
 const login_output_box = document.getElementById("test-api-output");
-document.getElementById("login-button").onclick = (async() => {
+document.getElementById("login-button").addEventListener("click", async() => {
     //var global_url, global_options, global_access = initCall(global_token);
-    login_output_box.innerHTML = await login(global_url, global_options, global_access);
-})
+    login_output_box.innerHTML = await login(global_url, global_options, global_token);
+});
 
-
-
-async function getActiveCourses(postUrl, header, token) {
-    url = postUrl + "/courses?enrollment_state=active&" + token;
-    try {
-        const response = await fetch(url, header);
-        return response.json();
-    } catch(e) {
-        console.log(e);
-    }
-}
-
-
-function getAssignments(postUrl, header, token) {
-    url = postUrl + "/courses" + token;
-    //console.log(url);
-    var obj;
-
-    try {
-        fetch(url, header)
-            .then(response => response.text()) // Read the response as text
-            .then(html => {
-                //alert("Here's the response from the CANVAS API: " + html);
-                obj = JSON.parse(html);
-                for(let i = 0; i < obj.length; i++) {
-                    console.log(obj[i]);
-                }
-            })
-            .catch(e => {
-                console.log(e)
-            })
-    } catch(e) {
-        console.log(e)
-    }
-}
-
-
-function getCourseIDs(postUrl, header, token) {
-    getActiveCourses(postUrl, header, token).then((courses) => {
-            console.log("TEST - testing getCourseIDs(), here we log courses w/in it: ");
-            console.log(courses);
-    });
-}
-
-
-function dashboard(postUrl, header, token) {
-    url = postUrl + "/dashboard/dashboard_cards" + token;
-
-    try {
-        fetch(url, header)
-            .then(response => response.text()) // Read the response as text
-            .then(html => alert(html))
-    } catch(e) {
-        console.log(e)
-    }
-}

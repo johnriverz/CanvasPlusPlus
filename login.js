@@ -1,25 +1,26 @@
+/* login.js */
 
-// PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM MAIN BUT ARE HERE NOW FOR TESTING
+// PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
+// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
 /*
-my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; // paste your access token here for testing
-access_token = "access_token=" + my_token;
-options = {
+// paste your access token here for testing
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let options = {
     method: 'GET'
 };
-
-starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1"
-api_output_box = document.getElementById("test-api-output");
+let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1"
 */
 
 // FUNCTION IMPLEMENTATION
 
 /* LOGIN - Use the access key to authorize your CANVAS API requests. 
-Outputs the text to be put in 
-Here's an example: */
+Outputs the text to be put into the "test-api-output" box in our .html
+*/
 
-async function login(post_url, options, token_url) {
+async function login(post_url, options, token) {
     console.log("TEST: the login button click function ran");
     // login_url == courses api call URL, since we want to get course info when logging into extension
+    var token_url = "access_token=" + token;
     var login_url = post_url + "/courses?enrollment_state=active&" + token_url;
     console.log("TESTING login.js below...")
     console.log(login_url);
@@ -49,14 +50,37 @@ async function login(post_url, options, token_url) {
                 throw new Error('ERROR - manually caught: in fetch');
             }
             else
-                return response;
+                return response.text();
             }) 
     // below should return API response as text, or api_output_box_text error message
     return output;
 }
 
-// TEST FUNCTIONS HERE
-//login(starter_url, options, access_token)
+function getCourseIDs(postUrl, header, token) {
+    getActiveCourses(postUrl, header, token).then((courses) => {
+            console.log("TEST - testing getCourseIDs(), here we log courses w/in it: ");
+            console.log(courses);
+    });
+}
+
+async function getActiveCourses(postUrl, header, token) {
+    url = postUrl + "/courses?enrollment_state=active&" + token;
+    try {
+        const response = await fetch(url, header);
+        return response.json();
+    } catch(e) {
+        console.log(e);
+    }
+}
+
+
+
+// TEST FUNCTIONS HERE - UNCOMMENT TO TEST
+/*
+test_output = login(starter_url, options, my_token);
+console.log(test_output);
+*/
+
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
 export {login};
