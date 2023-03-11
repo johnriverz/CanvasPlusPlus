@@ -2,13 +2,17 @@
 
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
 // UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
-
-//paste your access token here for testing
-// let my_token = "2391~KDgphoEk1whGZyI62u1Ljg3j87hvqWBIpQmBztHftaLdGVCclTdVxuS30IcfcJ75"; 
-// let options = {
-//     method: 'GET'
-// };
-// let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1"
+/* */
+// paste your access token here for testing
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let options = {
+    method: 'GET', /*
+    headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }, */
+};
+let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1"
 
 
 // FUNCTION IMPLEMENTATION
@@ -17,23 +21,13 @@
 Outputs the text to be put into the "test-api-output" box in our .html
 */
 
-async function login(post_url, options, token, call, id) {
-    //console.log("TEST: the login button click function ran");
+async function login(post_url, options, token) {
+    console.log("TEST: the login button click function ran");
     // login_url == courses api call URL, since we want to get course info when logging into extension
     var token_url = "access_token=" + token;
-
-    var call_url;
-    if (call === "getCourseIDs") {
-        call_url = "/courses?enrollment_state=active&";
-    }
-    if (call === "getAssignments") {
-        call_url = "/courses/"+ id + "/assignments?bucket=upcoming&"
-    }
-
-    var login_url = post_url + call_url + token_url;
-    //console.log("TESTING login.js below...")
-    //console.log(login_url);
-
+    var login_url = post_url + "/courses?enrollment_state=active&" + token_url;
+    console.log("TESTING login.js below...")
+    console.log(login_url);
     const output = await fetch(login_url, options)
         .then(response => {
             if(!response.ok){
@@ -59,31 +53,45 @@ async function login(post_url, options, token, call, id) {
                 }
                 throw new Error('ERROR - manually caught: in fetch');
             }
-            else {
-                //console.log(response.text())
+            else
                 return response.text();
-            }
-        })
+            }) 
     // below should return API response as text, or api_output_box_text error message
-    return JSON.parse(output);
-} 
+    return output;
+}
+
+async function getCourseIDs(response) { // Pass in response.text()
+    console.log(response);
+    r_json = JSON.parse(response);
+    course_ids = new Map();
+    r_json.forEach((course) => {
+        console.log(course.id);
+        course_ids.set(course.course_code, course.id);
+    });
+    return course_ids;
+}
 
 
-// async function getActiveCourses(postUrl, header, token) {
-//     url = postUrl + "/courses?enrollment_state=active&" + token;
-//     try {
-//         const response = await fetch(url, header);
-//         return response.json();
-//     } catch(e) {
-//         console.log(e);
-//     }
-// }
+async function getActiveCourses(postUrl, header, token) {
+    url = postUrl + "/courses?enrollment_state=active&" + token;
+    try {
+        const response = await fetch(url, header);
+        return response.json();
+    } catch(e) {
+        console.log(e);
+    }
+}
 
 
 // TEST FUNCTIONS HERE - UNCOMMENT TO TEST
+/**/
+test_output = await login(starter_url, options, my_token);
+//console.log(test_output);
+console.log(getCourseIDs(test_output));
 
-// test_output = login(starter_url, options, my_token);
-// console.log(test_output);
+
+
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-export {login};
+//export {login};
+
