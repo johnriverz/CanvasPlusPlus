@@ -2,14 +2,18 @@
 
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
 // UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
-/*
+/* */
 // paste your access token here for testing
 let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
 let options = {
-    method: 'GET'
+    method: 'GET', /*
+    headers: {
+        "Content-Type": "application/json",
+        // 'Content-Type': 'application/x-www-form-urlencoded',
+      }, */
 };
 let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1"
-*/
+
 
 // FUNCTION IMPLEMENTATION
 
@@ -72,6 +76,9 @@ async function getActiveCourses(postUrl, header, token) {
         console.log(e);
     }
 }
+
+let test = await login(starter_url, options, my_token);
+let donothing = console.log(test);
 
 
 
