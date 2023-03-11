@@ -26,10 +26,9 @@ async function login(post_url, options, token) {
     // login_url == courses api call URL, since we want to get course info when logging into extension
     var token_url = "access_token=" + token;
     var login_url = post_url + "/courses?enrollment_state=active&" + token_url;
-    console.log("TESTING login.js below...")
+    console.log("TESTING login.js . the url we call in it is below...")
     console.log(login_url);
-    const output = await fetch(login_url, options)
-        .then(response => {
+    const output = await fetch(login_url, options).then(response => {
             if(!response.ok){
                 console.log("An error arose when fetching from the Canvas API, its response is: ");
                 console.log(response);
@@ -60,10 +59,12 @@ async function login(post_url, options, token) {
     return output;
 }
 
+/* getCourseIDs - fetches the course IDs for user's active courses.
+    Returns them in a map (course_code: id) */
 async function getCourseIDs(response) { // Pass in response.text()
     console.log(response);
-    r_json = JSON.parse(response);
-    course_ids = new Map();
+    let r_json = JSON.parse(response);
+    let course_ids = new Map();
     r_json.forEach((course) => {
         console.log(course.id);
         course_ids.set(course.course_code, course.id);
@@ -84,14 +85,14 @@ async function getActiveCourses(postUrl, header, token) {
 
 
 // TEST FUNCTIONS HERE - UNCOMMENT TO TEST
-/**/
+/*
 test_output = await login(starter_url, options, my_token);
 //console.log(test_output);
 console.log(getCourseIDs(test_output));
-
+*/
 
 
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-//export {login};
+export {login, getCourseIDs};
 

@@ -12,26 +12,9 @@ let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructur
 */
 
 // IMPORTS
-import {login} from "./login.js"
+import {login, getCourseIDs} from "./login.js"
 
 // FUNCTION IMPLEMENTATION
-
-/* getCourseIDs - fetches the course IDs for user's active courses.
-    Returns them in a map (course_code: id) */
-async function getCourseIDs(postUrl, header, token) {
-    const out = await login(postUrl, header, token, "getCourseIDs").then((courses) => {
-            //console.log("TEST - testing getCourseIDs(), here we log courses w/in it: ");
-            const IDs = new Map();
-            //console.log(courses);
-            for(let i = 0; i < courses.length; i++) { 
-                IDs.set(courses[i].course_code, courses[i].id);
-            }
-            //console.log(IDs);
-            return IDs;
-    });
-    //console.log(out);
-    return out;
-}
 
 
 /* getAssignments - description here */
