@@ -30,7 +30,6 @@ async function login(post_url, options, token, call, id) {
         call_url = "/courses/"+ id + "/assignments?bucket=upcoming&"
     }
 
-
     var login_url = post_url + call_url + token_url;
     //console.log("TESTING login.js below...")
     //console.log(login_url);
