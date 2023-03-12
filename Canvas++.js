@@ -7,35 +7,64 @@ file, the 3 other .js files will only hold the functions to be called.
 
 
 // IMPORTS
-import {login} from "./login.js"
-import {getAssignments, getCourseIDs} from "./assignments.js"
+import {login, getCourseIDs} from "./login.js"
+import {getAssignments} from "./assignments.js"
 
 
-// SETUP MAIN VARIABLES
+// SETUP AND MANAGE GLOBAL VARIABLES
+
+// important url that will prepend an
+// "Access-Control-Allow-Origin" onto the CANVAS API response's header
+// See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
+const cors_url = "https://cors-anywhere.herokuapp.com/";
+// specify the host url
+const base_url = "https://canvas.instructure.com/api/v1";
+// header(s)
+//const header = {"Authorization" : "Bearer " + access_token};
+// complete URL for API call request
+const global_url = cors_url + base_url;
+
+let global_options = {
+    method: 'GET',
+};
 
 /* Access Token Stuff */ 
 //Get data from chrome extensions local storage
 let storageCache = { count: 0, course_ids: 0, token: 0};
 let global_token = storageCache.token;
-let global_IDs = storageCache.course_ids;
+
 
 // Asynchronously retrieve data from storage.local, then cache it.
-async function initStorageCache(){ 
+// We do this once here at the beginning of the script to retrieve
+// values, such as the users Canvas API access token, from the extension's
+// storage from previous sessions, if any exists.
+const initStorageCache = chrome.storage.local.get().then((items) => {
+    // Copy the data retrieved from storage into storageCache.
+    Object.assign(storageCache, items);
+
+    //TESTING
+    console.log("TEST: in get() - count is : " + storageCache.count +
+        " and token is: " + storageCache.token);
+    // Reassign the storageCache actual token value to our global_token
+    global_token = storageCache.token;
+});
+
+// Below updates storageCache, which holds each session's values
+// for use in our functions, whenever we modify chrome storage
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+        console.log(
+            `Storage key "${key}" in namespace "${namespace}" changed.`,
+            `Old value was "${oldValue}", new value is "${newValue}".`
+        );
+    }
     chrome.storage.local.get().then((items) => {
         // Copy the data retrieved from storage into storageCache.
         Object.assign(storageCache, items);
-        
-        //TESTING
-        console.log("TEST: in get() - count is : " + storageCache.count + 
-        " and token is: " + storageCache.token + "and course IDs are: " + storageCache.course_ids);
-        // Reassign the storageCache actual token value to our global_token
-        global_token = storageCache.token;
-        global_IDs = storageCache.course_ids;
-        return 1; // return 1 to indicate success
     });
-}
+});
 
-
+// SUBMIT AND SAVE TOKEN TO CHROME STORAGE (IN LOGIN TAB)
 /* NOTE: Below function is weird to have in main .js file, but necessary since  
 our main .js file needs to have a global access token for usage in imported functions
 Save canvas access token to chrome extension on click of "submit" button */
@@ -60,22 +89,10 @@ document.getElementById("submit-token").onclick = (async () => {
 });
 
 
-// SETUP MAIN VARIABLES - Initialize variables needed to access Canvas API via HTML requests
- // validates calls to Canvas API for user's data
- //const global_access = "access_token=" + global_token;
- // important url that will prepend an
- // "Access-Control-Allow-Origin" onto the CANVAS API response's header
- // See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
- const cors_url = "https://cors-anywhere.herokuapp.com/";
- // specify the host url
- const base_url = "https://canvas.instructure.com/api/v1";
- // header(s)
- //const header = {"Authorization" : "Bearer " + access_token};
- const global_options = {
-     method: 'GET'
- };
- // complete URL for API call request
- const global_url = cors_url + base_url;
+// Initialize variables needed to access Canvas API via HTML requests
+
+
+
 
 
 // CANVAS++ INTERFACE FUNCTIONALITY
@@ -104,15 +121,10 @@ function showTab(tabNum) {
 /* LOGIN - Use the access key to authorize your CANVAS API requests. Here's an example: */
 const login_output_box = document.getElementById("test-api-output");
 document.getElementById("login-button").addEventListener("click", async() => {
-     try {
-        let success = await initStorageCache();
-    } catch (e) {
-        // Handle error that occurred during storage initialization.
-        console.log(e);
-    }
+
 
     let login_output = await login(global_url, global_options, global_token);
-    login_output_box.innerHTML = "";
+    login_output_box.innerHTML = login_output;
     let course_id_map = await getCourseIDs(login_output);
 
     for (let [key, value] of course_id_map) {
@@ -130,16 +142,11 @@ document.getElementById("login-button").addEventListener("click", async() => {
 const assignments_output_box = document.getElementById("test-api-output");
 document.getElementById("assignments-button").addEventListener("click", async() => {
     // var global_url, global_options, global_access = initCall(global_token);
-    try {
-        let success = await initStorageCache();
-    } catch (e) {
-        // Handle error that occurred during storage initialization.
-        console.log(e);
-    }
 
-    let course_id_map = await chrome.storage.local.get(storageCache).then((items) => {console.log(items.course_ids /*return items.course_ids*/)});
+    let course_id_map = storageCache.course_ids; // await chrome.storage.local.get(storageCache).then((items) => {return items.course_ids;});
     console.log("TEST: logging course ids from within assignments-button js");
     console.log(storageCache)
     console.log(course_id_map);
-    assignments_output_box.innerHTML = await getAssignments(global_url, global_options, global_token);
+    let ass_output = await getAssignments(global_url, global_options, global_token, course_id_map);
+    assignments_output_box.innerHTML = ass_output;
 });

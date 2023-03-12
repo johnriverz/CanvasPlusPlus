@@ -43,7 +43,7 @@ async function login(post_url, options, token) {
                 }
                 if (response.status == "401"){
                     console.log("TEST: Displaying 401 error text")
-                    let wrong_token = `.\n This error means your CANVAS access token is incorrect or missing.
+                    const wrong_token = `.\n This error means your CANVAS access token is incorrect or missing.
                     \n Try submitting your CANVAS API access token again, and if that doesn't work try another token.`
                     let error_response = api_output_box_text.concat(wrong_token);
                     console.log("TEST: The api_output_box_text is below...")
