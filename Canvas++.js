@@ -153,7 +153,7 @@ document.getElementById("assignments-button").addEventListener("click", async() 
     console.log("TEST: logging course ids from within assignments-button js");
     console.log(storageCache);
     console.log(course_ids_string);
-    let course_ids_map = new Map(JSON.parse(course_ids_string));
+    let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
     for (var [key, course_id] of course_ids_map){
         console.log("In Canvas++.js - assignments button for loop.");
         console.log("calling getAssignments for course name:" + key + " and id: " + course_id);
@@ -170,7 +170,7 @@ document.getElementById("notifications-button").addEventListener("click", async(
     console.log("TEST: logging course ids from within notifcations-button js");
     console.log(storageCache);
     console.log(course_ids_string);
-    let course_ids_map = new Map(JSON.parse(course_ids_string));
+    let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
     for (var [key, course_id] of course_ids_map){
         console.log("In Canvas++.js - notifications button for loop.");
         console.log("calling getNotifications for course name:" + key + " and id: " + course_id);
