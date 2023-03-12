@@ -18,29 +18,30 @@ let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructur
 
 
 /* getAssignments - description here */
-async function getAssignments(post_url, options, token, course_ids) { // course_ids is map in storage
-    console.log("Test: Logging course_ids from getAssignments:");
-    console.log(course_ids);
+async function getAssignments(post_url, options, token, course, course_id) {
+    console.log("Test: Logging course_id from getAssignments:");
+    console.log(course_id);
     var token_url = "access_token=" + token;
     let all_courses_ass = []
-    for (var [key, course_id] of course_ids) {
-        //console.log(key + ": " + value);
-        console.log("Upcoming assignments in " + key + ":");
-        const course_url_part = "/courses/" + course_id + "/assignments?bucket=upcoming&";
-        let ass_url = post_url + course_url_part + token_url;
-        console.log("Calling the following assignment GET URL from getAssignments:");
-        console.log(ass_url);
-        let ass_list = [];
-        const res = await fetchAssignments(ass_url, options).then((assign) => {
-            for (let i = 0; i < assign.length; i++) {
-                console.log(assign[i].name + " is due at: " + assign[i].due_at);
-                ass_list.push(assign[i]);
-            }
-            return ass_list;
-        });
-        all_courses_ass.push(res);
-    }
-    return all_courses_ass.text()
+    
+    //console.log(key + ": " + value);
+    console.log("Upcoming assignments in " + course + ":");
+    const course_url_part = "/courses/" + course_id + "/assignments?bucket=upcoming&";
+    let ass_url = post_url + course_url_part + token_url;
+    console.log("Calling the following assignment GET URL from getAssignments:");
+    console.log(ass_url);
+    let ass_list = [];
+    const res = await fetchAssignments(ass_url, options).then((assign) => {
+        for (let i = 0; i < assign.length; i++) {
+            console.log(assign[i].name + " is due at: " + assign[i].due_at);
+            ass_list.push(assign[i].name);
+        }
+        console.log(ass_list);
+        return ass_list;
+    });
+    all_courses_ass.push(res);
+    console.log(all_courses_ass)
+    return all_courses_ass
 }
 
 async function fetchAssignments(ass_url, options){
@@ -69,9 +70,15 @@ async function fetchAssignments(ass_url, options){
             throw new Error('ERROR - manually caught: in fetch');
         }
         else
-            return response;
+            return response.text();
     });
-    return output;
+    //console.log(JSON.parse(output));
+    return JSON.parse(output);
+}
+
+
+async function filter() {
+
 }
 
 
