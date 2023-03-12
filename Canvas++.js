@@ -137,7 +137,7 @@ document.getElementById("assignments-button").addEventListener("click", async() 
         console.log(e);
     }
 
-    let course_id_map = await chrome.storage.local.get(storageCache).then((items) => {return items.course_ids;});
+    let course_id_map = await chrome.storage.local.get(storageCache).then((items) => {console.log(items.course_ids /*return items.course_ids*/)});
     console.log("TEST: logging course ids from within assignments-button js");
     console.log(storageCache)
     console.log(course_id_map);
