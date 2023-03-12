@@ -51,7 +51,7 @@ async function login(post_url, options, token) {
                     console.log(error_response);
                     return error_response;
                 }
-                throw new Error('ERROR - manually caught: in fetch');
+                throw new Error('ERROR - manually thrown: in fetch');
             }
             else
                 return response.text();
