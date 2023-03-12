@@ -12,7 +12,8 @@ let options = {
         // 'Content-Type': 'application/x-www-form-urlencoded',
       }, */
 };
-let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1"
+let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructure.com/api/v1";
+
 
 
 // FUNCTION IMPLEMENTATION
