@@ -7,7 +7,7 @@
 
 NOTES FOR DEVELOPERS:
 1. Don't use any inline javascript functions on this .html file, they will throw errors in
-the chrome extension and it will not function properly. Use ids in this .html file and then reference 
+the chrome extension and it will not function properly. Use ids in this .html file and then reference
 them in a .js file whenever you want to do something with javascript. -->
 
 <!-- CSS Styles -->
@@ -27,63 +27,79 @@ them in a .js file whenever you want to do something with javascript. -->
         <!-- Title -->
         <h2>Canvas++</h2>
 
-        <!-- Tabs -->
-        <div id="assignments-tab-btn" class="tab">
-            <h3>Assignments</h3>
+        <!-- Not authenticated -->
+        <div id="login" class="login">
+
+            <!-- Access Token Login -->
+            <div id="access" class="login sign-in">
+                <p>Log in with your Canvas Access Token.</p>
+                <form>
+                    <label for="canvas-token">Paste your Canvas Access Token here:</label><br>
+                    <input type="text" id="canvas-token" name="canvas-token"><br>
+                    <input id="submit-token" type="button" value="Submit"></form>
+                </form>
+                <p> After you have submitted your access token, <br>you can test a Canvas API call here:</p>
+                <button id="login-button">Test API</button>
+                <div class="test-api-output-box">
+                    <p id="test-api-output">This text box will show the response from the API</p>
+                </div>
+            </div>
         </div>
 
-        <div id="notifications-tab-btn" class="tab" >
-            <h3>Notifications</h3>
-        </div>
+        <!-- Authenticated content -->
+        <div id="authed" class="authed" style="display: none">
 
-        <div id="grade-calc-tab-btn" class="tab">
-            <h3>Grade Calc</h3>
-        </div>
+            <!-- Three tabs -->
+            <div id="tab1" class="tab selected">
+                <h3>Assignments</h3>
+            </div>
 
-        <div id="access-token-tab-btn" class="tab">
-            <h3>Access Token</h3>
-        </div>
+            <div id="tab2" class="tab" >
+                <h3>Notifications</h3>
+            </div>
 
-        <!-- Assignment Display -->
-        <div id="tab1" class="display">
-            <p>Assignment display.</p>
-        </div>
+            <div id="tab3" class="tab">
+                <h3>Grade Calc</h3>
+            </div>
 
-        <!-- Notification Display -->
-        <div id="tab2" class="display" style="display: none">
-            <p>Notification display.</p>
+            <!-- Course Side Display -->
+            <div class="display">
+                <div id="course_window" class="course_window scroll-window">
+                    <div id="course_list"></div>
+                </div>
 
-            <!-- Email Toggle -->
-            <label id="email-label">Send emails: </label>
-            <select id="email-toggle">
-                <option value="true">Yes</option>
-                <option value="false" selected>No</option>
-            </select>
-        </div>
+                <!-- Assignment Display -->
+                <div id="tab_window1" class="tab_window scroll-window">
+                    <div id="assignment_list"></div>
+                </div>
 
-        <!-- Grade Calculator -->
-        <div id="tab3" class="display" style="display: none">
-            <p>Grade calculator.</p>
-        </div>
+                <!-- Notification Display -->
+                <div id="tab_window2" class="tab_window scroll-window" style="display: none">
+                    <!-- Email Toggle
+                    <label id="email-label">Send emails: </label>
+                    <select id="email-toggle">
+                        <option value="true">Yes</option>
+                        <option value="false" selected>No</option>
+                    </select>
+                    -->
 
-        <!-- Access Token Login -->
-        <div id="tab4" class="display" style="display: none">
-            <p>Log in with your Canvas Access Token.</p>
-            <form>
-                <label for="canvas-token">Paste your Canvas Access Token here:</label><br>
-                <input type="text" id="canvas-token" name="canvas-token"><br>
-                <input id="submit-token" type="button" value="Submit"></form>
-            </form>
-            <p> After you have submitted your access token, <br>you can test a Canvas API call here:</p>
-            <button id="login-button">Login</button>
-            <div class="test-api-output-box">
-                <p id="test-api-output">This text box will show the response from the API</p>
+                    <div id="notifications_list"></div>
+                </div>
+
+                <!-- Grade Calculator -->
+                <div id="tab_window3" class="tab_window scroll-window" style="display: none">
+                    <div id="grade_list"></div>
+                </div>
+
             </div>
         </div>
     </div>
 
     <!-- Javascript -->
     <script type="module" src="Canvas++.js"></script>
+    <script type="module" src="assignments.js"></script>
+    <script type="module" src="notifications.js"></script>
+    <script type="module" src="grade_calculator.js"></script>
 </body>
 
 </html>

@@ -1,10 +1,13 @@
 /* login.js */
 
+// IMPORTS
+import {loadCanvasExtension} from "./Canvas++.js"
+
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
-// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
+// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE
 /*
 // paste your access token here for testing
-let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA";
 let options = {
     method: 'GET'
 };
@@ -13,7 +16,7 @@ let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructur
 
 // FUNCTION IMPLEMENTATION
 
-/* LOGIN - Use the access key to authorize your CANVAS API requests. 
+/* LOGIN - Use the access key to authorize your CANVAS API requests.
 Outputs the text to be put into the "test-api-output" box in our .html
 */
 
@@ -26,13 +29,16 @@ async function login(post_url, options, token) {
     console.log(login_url);
     const output = await fetch(login_url, options)
         .then(response => {
+            //// DELETE THIS WHEN SIGN-IN WORKING AND UNCOMMENT THE SAME CALL BELOW
+            loadCanvasExtension();
+            ////
             if(!response.ok){
                 console.log("An error arose when fetching from the Canvas API, its response is: ");
                 console.log(response);
                 let api_output_box_text = ("Response code: " + response.status + " Response Text: " + response.statusText);
                 if (response.status == "403"){
                     console.log("TEST: Displaying 403 cors fix string... ");
-                    const fix_cors = `.\nThe 403 error often arises from CORS issues. Try fixing it by going 
+                    const fix_cors = `.\nThe 403 error often arises from CORS issues. Try fixing it by going
                     \n to this url and clicking 'Request temporary access to the demo server' button:\n
                     https://cors-anywhere.herokuapp.com/corsdemo`;
                     let error_response = api_output_box_text.concat(fix_cors);
@@ -49,9 +55,12 @@ async function login(post_url, options, token) {
                 }
                 throw new Error('ERROR - manually caught: in fetch');
             }
-            else
+            else {
+                // UNCOMMENT THIS WHEN SIGN-IN WORKING
+                //loadCanvasExtension();
                 return response.text();
-            }) 
+            }
+        })
     // below should return API response as text, or api_output_box_text error message
     return output;
 }
@@ -84,4 +93,3 @@ console.log(test_output);
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
 export {login};
-

@@ -1,10 +1,10 @@
 /* notifications.js */
 
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
-// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
+// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE
 /*
 // paste your access token here for testing
-let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA";
 let options = {
     method: 'GET'
 };
@@ -15,7 +15,7 @@ let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructur
 
 /* getAssignments - description here */
 
-async function getAssignments(post_url, header, token) {
+async function getNotifications(post_url, header, token) {
     var token_url = "access_token=" + token;
     var assignments_url = post_url + "/courses?enrollment_state=active&" + token_url;
     var obj;
@@ -57,6 +57,17 @@ test_output = login(starter_url, options, my_token);
 console.log(test_output);
 */
 
+function loadCourseNotifications(notifications) {
+    var list = "<p id='n_Label'>- Notifications -</p>";
+
+    for (var i = 0; i < notifications.list.length; i++) {
+        list += "<div class='notification'>";
+        list += notifications.list[i];
+        list += "</div>";
+    }
+
+    document.getElementById("notifications_list").innerHTML = list;
+}
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-export {getAssignments};
+export {getNotifications, loadCourseNotifications};

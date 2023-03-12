@@ -1,10 +1,10 @@
 /* grade_calculator.js */
 
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
-// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
+// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE
 /*
 // paste your access token here for testing
-let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA";
 let options = {
     method: 'GET'
 };
@@ -15,7 +15,7 @@ let starter_url = "https://cors-anywhere.herokuapp.com/https://canvas.instructur
 
 /* getAssignments - description here */
 
-async function getAssignments(post_url, header, token) {
+async function getGrades(post_url, header, token) {
     var token_url = "access_token=" + token;
     var assignments_url = post_url + "/courses?enrollment_state=active&" + token_url;
     var obj;
@@ -40,15 +40,36 @@ async function getAssignments(post_url, header, token) {
 }
 
 
-
-
-
 // TEST FUNCTIONS HERE - UNCOMMENT TO TEST
 /*
 test_output = login(starter_url, options, my_token);
 console.log(test_output);
 */
 
+function formatPercentage(value) {
+    return (value).toLocaleString(undefined, {
+        style: 'percent', minimumFractionDigits: 2, maximumFractionDigits: 2
+    });
+};
+
+
+function loadCourseGrades(grades) {
+    var list = "<p id='g_Label'>- Grade Calculator -</p>";
+
+    for (var i = 0; i < grades.list.length; i++) {
+        var grade = grades.list[i];
+        list += "<div class='grade'>";
+        list += "<p class='grade_label'>";
+        list += "<input type='text' valuie='" + grade.name + "<p/>"
+        list += "' id='grade_perc_" + i + "' name='lname'>";
+        list += "<p>" + grade.score.toFixed(4) * grade.weight.toFixed(4) + "/" + grade.weight.toFixed(4)
+        list += " :: " + formatPercentage(grade.score) + "<p/>";
+        list += "</div>";
+    }
+
+    document.getElementById("grade_list").innerHTML = list;
+}
+
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-export {getAssignments};
+export {getGrades, loadCourseGrades};

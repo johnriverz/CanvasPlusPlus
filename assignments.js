@@ -1,10 +1,10 @@
 /* assignments.js */
 
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
-// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
+// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE
 /*
 // paste your access token here for testing
-let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA";
 let options = {
     method: 'GET'
 };
@@ -26,9 +26,10 @@ async function getAssignments(post_url, header, token) {
             .then(html => {
                 //alert("Here's the response from the CANVAS API: " + html);
                 obj = JSON.parse(html);
-                for(let i = 0; i < obj.length; i++) {
+                for (let i = 0; i < obj.length; i++) {
                     console.log(obj[i]);
                 }
+                console.log(obj);
             })
             .catch(e => {
                 console.log(e)
@@ -40,7 +41,24 @@ async function getAssignments(post_url, header, token) {
 }
 
 
+function loadCourseAssignments(assignments) {
+    var label = document.createElement("p");
+    label.setAttribute("id", "a_Label");
+    label.textContent = "- Assignments -";
 
+    var list = "";
+    list += label.outerHTML;
+
+    for (var i = 0; i < assignments.list.length; i++) {
+        list += "<div class='assignment'>";
+        list += "Assignment: " + assignments.list[i];
+        list += "</div>";
+    }
+
+    //console.log(document.getElementById("a_Label"));
+
+    document.getElementById("assignment_list").innerHTML = list;
+}
 
 
 // TEST FUNCTIONS HERE - UNCOMMENT TO TEST
@@ -51,4 +69,4 @@ console.log(test_output);
 
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-export {getAssignments};
+export {getAssignments, loadCourseAssignments};
