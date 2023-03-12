@@ -38,13 +38,13 @@ let global_token = storageCache.token;
 // We do this once here at the beginning of the script to retrieve
 // values, such as the users Canvas API access token, from the extension's
 // storage from previous sessions, if any exists.
-const initStorageCache = chrome.storage.local.get().then((items) => {
+const initStorageCache = await chrome.storage.local.get().then((items) => {
     // Copy the data retrieved from storage into storageCache.
     Object.assign(storageCache, items);
 
     //TESTING
-    console.log("TEST: in get() - count is : " + storageCache.count +
-        " and token is: " + storageCache.token);
+    console.log("TEST: in initStorageCache - count is : " + storageCache.count +
+        " and token is: " + storageCache.token + " and courseIDs are: " + storageCache.course_ids);
     // Reassign the storageCache actual token value to our global_token
     global_token = storageCache.token;
 });
@@ -60,6 +60,8 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
     chrome.storage.local.get().then((items) => {
         // Copy the data retrieved from storage into storageCache.
+        console.log("Console logging chrome storage items in Canvas++.js upon storage change.");
+        console.log(items);
         Object.assign(storageCache, items);
     });
 });
@@ -71,7 +73,7 @@ Save canvas access token to chrome extension on click of "submit" button */
 document.getElementById("submit-token").onclick = (async () => {
     console.log("TEST: the set count function ran")
     try {
-        let success = await initStorageCache();
+        await initStorageCache;
     } catch (e) {
         // Handle error that occurred during storage initialization.
         console.log(e);
@@ -90,10 +92,6 @@ document.getElementById("submit-token").onclick = (async () => {
 
 
 // Initialize variables needed to access Canvas API via HTML requests
-
-
-
-
 
 // CANVAS++ INTERFACE FUNCTIONALITY
 // This is where we attach functions to our interface (document)
@@ -121,8 +119,6 @@ function showTab(tabNum) {
 /* LOGIN - Use the access key to authorize your CANVAS API requests. Here's an example: */
 const login_output_box = document.getElementById("test-api-output");
 document.getElementById("login-button").addEventListener("click", async() => {
-
-
     let login_output = await login(global_url, global_options, global_token);
     login_output_box.innerHTML = login_output;
     let course_id_map = await getCourseIDs(login_output);
@@ -131,22 +127,37 @@ document.getElementById("login-button").addEventListener("click", async() => {
         //console.log(key + ": " + value + "\n");
         login_output_box.innerHTML += key + ": " + value + "\n";
     }
+
+    try {
+        await initStorageCache;
+    } catch (e) {
+        // Handle error that occurred during storage initialization.
+        console.log(e);
+    }
     
-    storageCache.course_ids = course_id_map;
-    console.log(storageCache)
-    chrome.storage.local.set(storageCache);
+    var map_obj = Object.fromEntries(course_id_map);
+    storageCache.course_ids = JSON.stringify(map_obj);
+    console.log("Logging storageCache in Canvas++.js after login() call, below should have courseIDs");
+    console.log(storageCache);
+    chrome.storage.local.set(storageCache).then(async () => {
+        console.log("Value is set to " + JSON.stringify(storageCache));
+      });
 });
 
 
 /* ASSIGNMENTS - */
-const assignments_output_box = document.getElementById("test-api-output");
+const assignments_output_box = document.getElementById("test-assignments-output");
 document.getElementById("assignments-button").addEventListener("click", async() => {
-    // var global_url, global_options, global_access = initCall(global_token);
-
-    let course_id_map = storageCache.course_ids; // await chrome.storage.local.get(storageCache).then((items) => {return items.course_ids;});
+    let storageCache = await chrome.storage.local.get();
+    let course_ids_string = storageCache.course_ids;
     console.log("TEST: logging course ids from within assignments-button js");
-    console.log(storageCache)
-    console.log(course_id_map);
-    let ass_output = await getAssignments(global_url, global_options, global_token, course_id_map);
-    assignments_output_box.innerHTML = ass_output;
+    console.log(storageCache);
+    console.log(course_ids_string);
+    let course_ids_map = new Map(JSON.parse(course_ids_string));
+    for (var [key, course_id] of course_ids_map){
+        console.log("In Canvas++.js - assignments button for loop.");
+        console.log("calling getAssignments for course name:" + key + " and id: " + course_id);
+        let ass_output = await getAssignments(global_url, global_options, global_token, course_id);
+        assignments_output_box.innerHTML += ass_output + "\n";
+    }
 });
