@@ -57,7 +57,7 @@ test_output = login(starter_url, options, my_token);
 console.log(test_output);
 */
 
-function loadCourseNotifications(notifications) {
+function loadCourseNotifications(courseKey, notifications) {
     var list = "<p id='n_Label'>- Notifications -</p>";
 
     for (var i = 0; i < notifications.list.length; i++) {
@@ -66,7 +66,11 @@ function loadCourseNotifications(notifications) {
         list += "</div>";
     }
 
+    // Render list
     document.getElementById("notifications_list").innerHTML = list;
+
+    // Update course code label
+    document.getElementById("n_Label").textContent = "- " + courseKey + " Notifications -";
 }
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE

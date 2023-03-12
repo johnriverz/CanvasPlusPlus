@@ -53,21 +53,65 @@ function formatPercentage(value) {
 };
 
 
-function loadCourseGrades(grades) {
-    var list = "<p id='g_Label'>- Grade Calculator -</p>";
+function loadCourseGrades(courseKey, grades) {
+    var list = "<p>- Grade Calculator -</p>";
+    list += "<p id='g_Label'>- Grade: -</p>";
 
     for (var i = 0; i < grades.list.length; i++) {
         var grade = grades.list[i];
-        list += "<div class='grade'>";
-        list += "<p class='grade_label'>";
-        list += "<input type='text' valuie='" + grade.name + "<p/>"
-        list += "' id='grade_perc_" + i + "' name='lname'>";
-        list += "<p>" + grade.score.toFixed(4) * grade.weight.toFixed(4) + "/" + grade.weight.toFixed(4)
-        list += " :: " + formatPercentage(grade.score) + "<p/>";
-        list += "</div>";
+        list += "<form class='grade'>";
+        list += "<p>" + grade.name + "<p/><br>";
+        //list += "<input id='grade_perc_" + courseKey + i + "' type='text' value='" + grade.score.toFixed(4);
+        //list += "' class='grade_score' placeholder='" + + grade.score.toFixed(4) + "'>";
+            var input = document.createElement("input");
+            input.setAttribute("id", "grade_perc_" + courseKey + i);
+            input.setAttribute("class", "grade_score");
+            input.setAttribute("value", grade.score.toFixed(4));
+            input.setAttribute("placeholder", grade.score.toFixed(4));
+        list += input.outerHTML;
+        list += "<label id='grade_result_" + courseKey + i;
+        list += "' class='grade_perc'>/ " + grade.max.toFixed(4);
+        list += " = " + formatPercentage(grade.score) + "<label/><br>";
+        list += "</form>";
     }
 
     document.getElementById("grade_list").innerHTML = list;
+
+    // Add grade changers
+    for (var i = 0; i < grades.list.length; i++) {
+        var input = document.getElementById("grade_perc_" + courseKey + i)
+        input.addEventListener("onchange", handlePanelClick(courseKey, grades));
+    }
+
+    updateTotalGrade(courseKey, grades);
+}
+
+
+// Handle grade input change
+function handlePanelClick(courseKey, grades) {
+    return function() {
+        updateTotalGrade(courseKey, grades);
+    }
+}
+
+
+function updateTotalGrade(courseKey, grades) {
+    var totalGrade = 0;
+    for (var i = 0; i < grades.list.length; i++) {
+        var score = document.getElementById("grade_perc" + courseKey + i).value;
+        var grade = grades.list[i];
+
+        // Updated percentage for that assignment
+        var result = document.getElementById("grade_result_" + courseKey + i);
+        result.textContent = "/ " + grade.max.toFixed(4);
+        result.textContent += " = " + formatPercentage(score);
+
+        // Cummulative score for course
+        totalGrade += score * grade.weight / grade.max;
+    }
+
+    // Update course code label
+    document.getElementById("a_Label").textContent = "- " + courseKey + " Grade: " + formatPercentage(totalGrade);
 }
 
 

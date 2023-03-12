@@ -88,6 +88,7 @@
     background: #e81038;
 }
 
+
 .course, .assignment, .notification {
     display: block;
     margin: 12px;
@@ -111,12 +112,31 @@
 .assignment:hover {
     background: linear-gradient(#4a48, #2628);
 }
+.a-details {
+    display: block;
+    background: #ff08;
+    opacity: 1;
+    border: 2px solid #f00;
+    overflow-y: hidden;
+}
+
+.a-closed {
+    display: none !important;
+    height: 10px;
+    opacity: 0;
+    border: 2px solid #00f;
+    overflow-y: hidden;
+}
 
 .notification {
     background: linear-gradient(#4488, #4484);
 }
 .notification:hover {
     background: linear-gradient(#448c, #448c);
+}
+.n-details {
+    display: block;
+    background: #f0f8;
 }
 
 
@@ -125,6 +145,25 @@
 }
 .selected:hover {
     background: linear-gradient(#4cf8, #28c8);
+}
+
+.grade {
+    position: relative;
+    width: 100%;
+    height: 48px;
+}
+
+.grade_score {
+    position: absolute;
+    bottom: -2px;
+    left: 30px;
+    width: 50px;
+}
+
+.grade_perc {
+    position: absolute;
+    bottom: 8px;
+    left: 105px;
 }
 
 

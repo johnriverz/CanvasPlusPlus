@@ -151,24 +151,24 @@ var notifications = {
 
 var grades = {
     "A": { name: "AAA", list: [
-        {name: "a", score: 0.935, weight: 0.2},
-        {name: "b", score: 0.929, weight: 0.4},
-        {name: "c", score: 1, weight: 0.3},
-        {name: "d", score: 0.9626, weight: 0.1}
+        {name: "a", score: 0.935, max: 1, weight: 0.2},
+        {name: "b", score: 0.929, max: 1, weight: 0.4},
+        {name: "c", score: 1, max: 1, weight: 0.3},
+        {name: "d", score: 0.9626, max: 1, weight: 0.1}
     ] },
     "B": { name: "BBB", list: [
-        {name: "E", score: 0.928, weight: 0.3},
-        {name: "F", score: 0.8, weight: 0.4},
-        {name: "G", score: 0.8392, weight: 0.3}
+        {name: "E", score: 0.928, max: 1, weight: 0.3},
+        {name: "F", score: 0.8, max: 1, weight: 0.4},
+        {name: "G", score: 0.8392, max: 1, weight: 0.3}
     ] },
     "C": { name: "CCC", list: [
-        {name: "1", score: 1, weight: 0.1},
-        {name: "2", score: 1.01, weight: 0.1},
-        {name: "6", score: 0.928, weight: 0.3},
-        {name: "4", score: 0.8908, weight: 0.5}
+        {name: "1", score: 1, max: 1, weight: 0.1},
+        {name: "2", score: 1.01, max: 1, weight: 0.1},
+        {name: "6", score: 0.928, max: 1, weight: 0.3},
+        {name: "4", score: 0.8908, max: 1, weight: 0.5}
     ] },
     "D": { name: "DDD", list: [
-        {name: "one", score: 0.827, weight: 1},
+        {name: "one", score: 0.827, max: 1, weight: 1},
     ] }
 };
 
@@ -250,9 +250,9 @@ function loadCourse(courseKey) {
     if (n_Label) g_Label.innerHTML = "- " + courseKey + " Grade Calculator -";
 
     // Render appropriate data to each tab
-    loadCourseAssignments(assignments[courseKey]);
-    loadCourseNotifications(notifications[courseKey]);
-    loadCourseGrades(grades[courseKey]);
+    loadCourseAssignments(courseKey, assignments[courseKey]);
+    loadCourseNotifications(courseKey, notifications[courseKey]);
+    loadCourseGrades(courseKey, grades[courseKey]);
 }
 
 
