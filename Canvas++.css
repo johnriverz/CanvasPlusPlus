@@ -14,28 +14,119 @@
 .tab {
     display: inline-block;
     width: calc(100% / 3 - 8px);
-    background: linear-gradient(#fff3, #fff1);
+    background: linear-gradient(#fff6, #fff4);
     border: 2px solid #0008;
-    transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease;
 }
 .tab:hover {
-    background: linear-gradient(#4c48, #2828);
+    background: linear-gradient(#4a48, #2628);
 }
 
 .display {
     display: block;
     position: absolute;
     background: #0004;
-    top: 10rem;
+    top: 7rem;
     width: 100%;
     height: calc(100% - 7rem);
 }
 
-.test-api-output-box{
-    border: medium dashed green;
-    margin: 4px;
-    background: darkslategrey;
+.sign-in {
+    background: #0004;
+    padding-top: 1.5rem;
 }
+
+.test-api-output-box{
+    margin: 20px;
+    background: darkslategrey;
+    border: medium dashed green;
+}
+
+.course_window, .tab_window {
+    position: absolute;
+    height: calc(100% - 8px);
+    overflow-y: scroll;
+}
+.course_window {
+    left: 0;
+    width: calc(33% - 8px);
+    border: 4px double #000;
+}
+.tab_window {
+    right: 0;
+    width: calc(67% - 8px);
+    border: 4px double #000;
+}
+
+.scroll-window::-webkit-scrollbar {
+    width: 0.625rem;
+}
+.scroll-window::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 0.5rem #000;
+}
+.scroll-window::-webkit-scrollbar-thumb {
+    background: #646464;
+    outline: 0.0625rem solid black;
+    z-index: 1;
+    transition: all 0.2s ease;
+}
+.scroll-window::-webkit-scrollbar-thumb::before {
+    content: '';
+    position: absolute;
+    top: -0.125rem;
+    left: -0.125rem;
+    width: calc(100% + 0.25rem);
+    height: calc(100% + 0.25rem);
+    background: linear-gradient(#fff2, #0001);
+    z-index: 2;
+    transition: all 0.2s ease;
+}
+.scroll-window::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+.scroll-window::-webkit-scrollbar-thumb:active {
+    background: #e81038;
+}
+
+.course, .assignment, .notification {
+    display: block;
+    margin: 12px;
+    border-radius: 12px;
+    padding: 12px;
+    border: 2px solid #ccc8;
+    transition: all 0.5s ease;
+}
+
+.course {
+    background: linear-gradient(#8888, #8884);
+}
+.course:hover {
+    background: linear-gradient(#4a48, #2628);
+    transition: all 0.5s ease;
+}
+
+.assignment {
+    background: linear-gradient(#8888, #8884);
+}
+.assignment:hover {
+    background: linear-gradient(#4a48, #2628);
+}
+
+.notification {
+    background: linear-gradient(#4488, #4484);
+}
+.notification:hover {
+    background: linear-gradient(#448c, #448c);
+}
+
+
+.selected {
+    background: linear-gradient(#48c8, #2488);
+}
+.selected:hover {
+    background: linear-gradient(#4cf8, #28c8);
+}
+
 
 h2 {
     display: block;
@@ -51,4 +142,9 @@ h3 {
 
 p {
     font-size: 12px;
+}
+
+input {
+    margin: 8px;
+    margin-top: 4px;
 }
