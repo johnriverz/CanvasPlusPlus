@@ -9,6 +9,7 @@ file, the 3 other .js files will only hold the functions to be called.
 // IMPORTS
 import {login, getCourseIDs} from "./login.js"
 import {getAssignments} from "./assignments.js"
+import {getNotifications} from "./notifications.js"
 
 
 // SETUP AND MANAGE GLOBAL VARIABLES
@@ -23,6 +24,8 @@ const base_url = "https://canvas.instructure.com/api/v1";
 //const header = {"Authorization" : "Bearer " + access_token};
 // complete URL for API call request
 const global_url = cors_url + base_url;
+
+const not_url = cors_url + "https://canvas.instructure.com:443/api/v1";
 
 let global_options = {
     method: 'GET',
