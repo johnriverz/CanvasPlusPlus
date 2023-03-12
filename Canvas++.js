@@ -26,6 +26,8 @@ const base_url = "https://canvas.instructure.com/api/v1";
 // complete URL for API call request
 const global_url = cors_url + base_url;
 
+const not_url = cors_url + "https://canvas.instructure.com:443/api/v1";
+
 let global_options = {
     method: 'GET',
 };
