@@ -56,19 +56,21 @@ async function login(post_url, options, token) {
                 return response.text();
             }) 
     // below should return API response as text, or api_output_box_text error message
+    //console.log(output);
     return output;
 }
 
 /* getCourseIDs - fetches the course IDs for user's active courses.
     Returns them in a map (course_code: id) */
 async function getCourseIDs(response) { // Pass in response.text()
-    console.log(response);
+    //console.log(response);
     let r_json = JSON.parse(response);
     let course_ids = new Map();
     r_json.forEach((course) => {
-        console.log(course.id);
+        //console.log(course.id);
         course_ids.set(course.course_code, course.id);
     });
+    console.log(course_ids)
     return course_ids;
 }
 
