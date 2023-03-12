@@ -161,3 +161,20 @@ document.getElementById("assignments-button").addEventListener("click", async() 
         assignments_output_box.innerHTML += ass_output + "\n";
     }
 });
+
+/* NOTIFICATIONS - */
+const notifications_output_box = document.getElementById("test-notifications-output");
+document.getElementById("notifications-button").addEventListener("click", async() => {
+    let storageCache = await chrome.storage.local.get();
+    let course_ids_string = storageCache.course_ids;
+    console.log("TEST: logging course ids from within notifcations-button js");
+    console.log(storageCache);
+    console.log(course_ids_string);
+    let course_ids_map = new Map(JSON.parse(course_ids_string));
+    for (var [key, course_id] of course_ids_map){
+        console.log("In Canvas++.js - notifications button for loop.");
+        console.log("calling getNotifications for course name:" + key + " and id: " + course_id);
+        let not_output = await getNotifications(global_url, global_options, global_token, course_id);
+        notifications_output_box.innerHTML += not_output + "\n";
+    }
+});
