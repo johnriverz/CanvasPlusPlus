@@ -1,10 +1,10 @@
 /* assignments.js */
 
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
-// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
+// UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE
 /*
 // paste your access token here for testing
-let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA"; 
+let my_token = "2391~Ozq4czr8zWrKrw0ej8vA7ZSfMLA2ZbICANL1ZZUkNYJph8LMBNiLKZL5pzA1COIA";
 let options = {
     method: 'GET'
 };
@@ -23,7 +23,7 @@ async function getAssignments(post_url, options, token, course, course_id) {
     console.log(course_id);
     var token_url = "access_token=" + token;
     let all_courses_ass = []
-    
+
     //console.log(key + ": " + value);
     console.log("Upcoming assignments in " + course + ":");
     const course_url_part = "/courses/" + course_id + "/assignments?bucket=upcoming&";
@@ -52,7 +52,7 @@ async function fetchAssignments(ass_url, options){
             let api_output_box_text = ("Response code: " + response.status + " Response Text: " + response.statusText);
             if (response.status == "403") {
                 console.log("TEST: Displaying 403 cors fix string... ");
-                const fix_cors = `.\nThe 403 error often arises from CORS issues. Try fixing it by going 
+                const fix_cors = `.\nThe 403 error often arises from CORS issues. Try fixing it by going
                     \n to this url and clicking 'Request temporary access to the demo server' button:\n
                     https://cors-anywhere.herokuapp.com/corsdemo`;
                 let error_response = api_output_box_text.concat(fix_cors);
@@ -77,24 +77,17 @@ async function fetchAssignments(ass_url, options){
 }
 
 
-async function filter() {
-
-}
-
-
 function loadCourseAssignments(courseKey, assignments) {
     var list = "<p id='a_Label'>- Assignments -</p>";
 
     // Create assignment panel
     for (var i = 0; i < assignments.list.length; i++) {
-        var div = document.createElement("div");
-        div.setAttribute("id", "assignment" + courseKey + i);
-        div.setAttribute("class", "assignment");
-        div.innerHTML = "<p>" + assignments.list[i] + "</p>";
-        div.innerHTML += "<div id='a-info" + courseKey + i + "' class='closed'>";
-        div.innerHTML += "Due date, points worth, (link to submit page?)";
-        div.innerHTML += "</div>"
-        list += div.outerHTML;
+        list += "<div id='assignment" + courseKey + i + "' class='assignment'>";
+        list += "<p>" + assignments.list[i] + "</p>";
+        list += "<div id='a-info" + courseKey + i + "' class='closed'>";
+        list += "Due date, points worth, (link to submit page?)";
+        list += "</div>";
+        list += "</div>";
     }
 
     // Render list
@@ -110,6 +103,7 @@ function loadCourseAssignments(courseKey, assignments) {
     }
 }
 
+
 // Handle click on assignment panels
 function handlePanelClick(courseKey, length, index) {
     return function() {
@@ -117,15 +111,21 @@ function handlePanelClick(courseKey, length, index) {
     }
 }
 
+
 // Expand the assignment panel
 function openAssignment(courseKey, length, index) {
-    /*
+    var panel = document.getElementById("a-info" + courseKey + index);
+    var closed = false;
+    if (!panel.classList.contains("closed")) closed = true;
+
+    // Close all other panels
     for (var i = 0; i < length; i++) {
-        document.getElementById("a-info" + courseKey + i).setAttribute("class", "a-closed");
+        document.getElementById("a-info" + courseKey + i).setAttribute("class", "closed");
     }
-    */
-    document.getElementById("a-info" + courseKey + index).setAttribute("class", "a-details");
-    //console.log(document.getElementById("a-info" + courseKey + index));
+
+    // Expand curent pannel
+    if (closed);
+        panel.setAttribute("class", "a-details");
 }
 
 // TEST FUNCTIONS HERE - UNCOMMENT TO TEST
