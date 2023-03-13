@@ -46,14 +46,12 @@ function loadCourseAssignments(courseKey, assignments) {
 
     // Create assignment panel
     for (var i = 0; i < assignments.list.length; i++) {
-        var div = document.createElement("div");
-        div.setAttribute("id", "assignment" + courseKey + i);
-        div.setAttribute("class", "assignment");
-        div.innerHTML = "<p>" + assignments.list[i] + "</p>";
-        div.innerHTML += "<div id='a-info" + courseKey + i + "' class='closed'>";
-        div.innerHTML += "Due date, points worth, (link to submit page?)";
-        div.innerHTML += "</div>"
-        list += div.outerHTML;
+        list += "<div id='assignment" + courseKey + i + "' class='assignment'>";
+        list += "<p>" + assignments.list[i] + "</p>";
+        list += "<div id='a-info" + courseKey + i + "' class='closed'>";
+        list += "Due date, points worth, (link to submit page?)";
+        list += "</div>";
+        list += "</div>";
     }
 
     // Render list
@@ -80,13 +78,18 @@ function handlePanelClick(courseKey, length, index) {
 
 // Expand the assignment panel
 function openAssignment(courseKey, length, index) {
-    /*
+    var panel = document.getElementById("a-info" + courseKey + index);
+    var closed = false;
+    if (!panel.classList.contains("closed")) closed = true;
+
+    // Close all other panels
     for (var i = 0; i < length; i++) {
-        document.getElementById("a-info" + courseKey + i).setAttribute("class", "a-closed");
+        document.getElementById("a-info" + courseKey + i).setAttribute("class", "closed");
     }
-    */
-    document.getElementById("a-info" + courseKey + index).setAttribute("class", "a-details");
-    //console.log(document.getElementById("a-info" + courseKey + index));
+
+    // Expand curent pannel
+    if (closed);
+        panel.setAttribute("class", "a-details");
 }
 
 // TEST FUNCTIONS HERE - UNCOMMENT TO TEST

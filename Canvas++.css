@@ -107,6 +107,8 @@
 }
 
 .assignment {
+    padding-top: 0;
+    padding-bottom: 4px;
     background: linear-gradient(#8888, #8884);
 }
 .assignment:hover {
@@ -114,21 +116,12 @@
 }
 .a-details {
     display: block;
-    background: #ff08;
-    opacity: 1;
-    border: 2px solid #f00;
-    overflow-y: hidden;
-}
-
-.a-closed {
-    display: none !important;
-    height: 10px;
-    opacity: 0;
-    border: 2px solid #00f;
-    overflow-y: hidden;
+    padding-bottom: 8px;
 }
 
 .notification {
+    padding-top: 0;
+    padding-bottom: 0;
     background: linear-gradient(#4488, #4484);
 }
 .notification:hover {
@@ -136,15 +129,18 @@
 }
 .n-details {
     display: block;
-    background: #f0f8;
+    padding-bottom: 12px;
 }
-
 
 .selected {
     background: linear-gradient(#48c8, #2488);
 }
 .selected:hover {
     background: linear-gradient(#4cf8, #28c8);
+}
+
+.closed {
+    display: none;
 }
 
 .grade {
@@ -157,13 +153,15 @@
     position: absolute;
     bottom: -2px;
     left: 30px;
-    width: 50px;
+    width: 55px;
+    padding-left: 2px;
+    text-align: right;
 }
 
 .grade_perc {
     position: absolute;
     bottom: 8px;
-    left: 105px;
+    left: 110px;
 }
 
 

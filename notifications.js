@@ -61,8 +61,12 @@ function loadCourseNotifications(courseKey, notifications) {
     var list = "<p id='n_Label'>- Notifications -</p>";
 
     for (var i = 0; i < notifications.list.length; i++) {
-        list += "<div class='notification'>";
-        list += notifications.list[i];
+        list += "<div id='notification" + courseKey + i + "' class='notification'>";
+        list += "<p>" + notifications.list[i] + "</p>";
+        list += "<div id='n-info" + courseKey + i + "' class='closed'>";
+        list += "Date sent, message, (link to Canvas page?)";
+        list += "</div>";
+        list += "</div>";
         list += "</div>";
     }
 
@@ -71,7 +75,39 @@ function loadCourseNotifications(courseKey, notifications) {
 
     // Update course code label
     document.getElementById("n_Label").textContent = "- " + courseKey + " Notifications -";
+
+    // Add panel click handlers
+    for (var i = 0; i < notifications.list.length; i++) {
+        var panel = document.getElementById("notification" + courseKey + i)
+        panel.addEventListener("click", handlePanelClick(courseKey, notifications.list.length, i));
+    }
 }
+
+
+// Handle click on assignment panels
+function handlePanelClick(courseKey, length, index) {
+    return function() {
+        openNotification(courseKey, length, index);
+    }
+}
+
+
+// Expand the assignment panel
+function openNotification(courseKey, length, index) {
+    var panel = document.getElementById("n-info" + courseKey + index);
+    var closed = false;
+    if (!panel.classList.contains("closed")) closed = true;
+
+    // Close all other panels
+    for (var i = 0; i < length; i++) {
+        document.getElementById("n-info" + courseKey + i).setAttribute("class", "closed");
+    }
+
+    // Expand curent pannel
+    if (closed);
+        panel.setAttribute("class", "n-details");
+}
+
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
 export {getNotifications, loadCourseNotifications};

@@ -9,7 +9,7 @@ file, the 3 other .js files will only hold the functions to be called.
 import {login} from "./login.js"
 import {getAssignments, loadCourseAssignments} from "./assignments.js"
 import {getNotifications, loadCourseNotifications} from "./notifications.js"
-import {getGrades, loadCourseGrades} from "./grade_calculator.js"
+import {getGrades, loadCourseGrades, updateTotalGrade} from "./grade_calculator.js"
 
 
 // SETUP MAIN VARIABLES - Create global API Call variables with initCall
@@ -128,46 +128,46 @@ var currentCourse = null;
 
 // All courses
 var courses = {
-    "A": { name: "AAA", id: 0 },
-    "B": { name: "BBB", id: 1 },
-    "C": { name: "CCC", id: 2 },
-    "D": { name: "DDD", id: 3 }
+    "AAA": { name: "AAA", id: 0 },
+    "BBB": { name: "BBB", id: 1 },
+    "CCC": { name: "CCC", id: 2 },
+    "DDD": { name: "DDD", id: 3 }
 };
 
 // All assignments
 var assignments = {
-    "A": { name: "AAA", list: ["a", "b", "c", "d"] },
-    "B": { name: "BBB", list: ["E", "F", "G"] },
-    "C": { name: "CCC", list: ["1", "2", "6", "4"] },
-    "D": { name: "DDD", list: ["one"] }
+    "AAA": { name: "AAA", list: ["a", "b", "c", "d"] },
+    "BBB": { name: "BBB", list: ["E", "F", "G"] },
+    "CCC": { name: "CCC", list: ["1", "2", "6", "4"] },
+    "DDD": { name: "DDD", list: ["one"] }
 };
 
 var notifications = {
-    "A": { name: "AAA", list: ["default text", "badfhdfgnaretjnadg"] },
-    "B": { name: "BBB", list: ["none"] },
-    "C": { name: "CCC", list: ["filler filler", "loren epsom", "filler filler"] },
-    "D": { name: "DDD", list: ["one"] }
+    "AAA": { name: "AAA", list: ["default text", "badfhdfgnaretjnadg"] },
+    "BBB": { name: "BBB", list: ["none"] },
+    "CCC": { name: "CCC", list: ["filler filler", "loren epsom", "filler filler"] },
+    "DDD": { name: "DDD", list: ["one"] }
 };
 
 var grades = {
-    "A": { name: "AAA", list: [
+    "AAA": { name: "AAA", list: [
         {name: "a", score: 0.935, max: 1, weight: 0.2},
-        {name: "b", score: 0.929, max: 1, weight: 0.4},
-        {name: "c", score: 1, max: 1, weight: 0.3},
+        {name: "b", score: 9.29, max: 10, weight: 0.4},
+        {name: "c", score: 10, max: 10, weight: 0.3},
         {name: "d", score: 0.9626, max: 1, weight: 0.1}
     ] },
-    "B": { name: "BBB", list: [
+    "BBB": { name: "BBB", list: [
         {name: "E", score: 0.928, max: 1, weight: 0.3},
-        {name: "F", score: 0.8, max: 1, weight: 0.4},
+        {name: "F", score: 1.8, max: 2, weight: 0.4},
         {name: "G", score: 0.8392, max: 1, weight: 0.3}
     ] },
-    "C": { name: "CCC", list: [
-        {name: "1", score: 1, max: 1, weight: 0.1},
+    "CCC": { name: "CCC", list: [
+        {name: "1", score: 2, max: 2, weight: 0.1},
         {name: "2", score: 1.01, max: 1, weight: 0.1},
-        {name: "6", score: 0.928, max: 1, weight: 0.3},
+        {name: "6", score: 2.928, max: 3, weight: 0.3},
         {name: "4", score: 0.8908, max: 1, weight: 0.5}
     ] },
-    "D": { name: "DDD", list: [
+    "DDD": { name: "DDD", list: [
         {name: "one", score: 0.827, max: 1, weight: 1},
     ] }
 };
@@ -239,15 +239,18 @@ function loadCourse(courseKey) {
     }
     var courseButton = document.getElementById("course" + courseKey);
     courseButton.classList.add("selected");
-    console.log(courseButton)
 
     // Update course code labels
     var a_Label = document.getElementById("a_Label")
     if (a_Label) a_Label.innerHTML = "- " + courseKey + " Assignments -";
     var n_Label = document.getElementById("n_Label")
     if (n_Label) n_Label.innerHTML = "- " + courseKey + " Notifications -";
-    var n_Label = document.getElementById("g_Label")
-    if (n_Label) g_Label.innerHTML = "- " + courseKey + " Grade Calculator -";
+
+    // Update course code label for grade calc via this function
+    if (document.getElementById("g_Label") &&
+    document.getElementById("grade_perc_" + courseKey + 0)) {
+        updateTotalGrade(courseKey, grades[courseKey]);
+    }
 
     // Render appropriate data to each tab
     loadCourseAssignments(courseKey, assignments[courseKey]);
