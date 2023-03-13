@@ -53,23 +53,68 @@ function formatPercentage(value) {
 };
 
 
-function loadCourseGrades(grades) {
-    var list = "<p id='g_Label'>- Grade Calculator -</p>";
+function loadCourseGrades(courseKey, grades) {
+    var list = "<p>- Grade Calculator -</p>";
+    list += "<p id='g_Label'>Grade</p>";
 
     for (var i = 0; i < grades.list.length; i++) {
         var grade = grades.list[i];
-        list += "<div class='grade'>";
-        list += "<p class='grade_label'>";
-        list += "<input type='text' valuie='" + grade.name + "<p/>"
-        list += "' id='grade_perc_" + i + "' name='lname'>";
-        list += "<p>" + grade.score.toFixed(4) * grade.weight.toFixed(4) + "/" + grade.weight.toFixed(4)
-        list += " :: " + formatPercentage(grade.score) + "<p/>";
-        list += "</div>";
+        list += "<form class='grade'>";
+        list += "<p>" + grade.name + "<p/><br>";
+        list += "<input id='grade_perc_" + courseKey + i + "' type='text' value='" + grade.score.toFixed(4);
+        list += "' class='grade_score' placeholder='" + + grade.score.toFixed(4) + "'>";
+        list += "<label id='grade_result_" + courseKey + i;
+        list += "' class='grade_perc'>/ " + grade.max.toFixed(4);
+        list += " = " + formatPercentage(grade.score) + "<label/><br>";
+        list += "</form>";
     }
 
     document.getElementById("grade_list").innerHTML = list;
+
+    // Add grade changers
+    for (var i = 0; i < grades.list.length; i++) {
+        var input = document.getElementById("grade_perc_" + courseKey + i)
+        input.addEventListener("change", handlePanelClick(courseKey, grades));
+    }
+
+    updateTotalGrade(courseKey, grades);
+}
+
+
+// Handle grade input change
+function handlePanelClick(courseKey, grades) {
+    return function() {
+        updateTotalGrade(courseKey, grades);
+    }
+}
+
+
+function updateTotalGrade(courseKey, grades) {
+    var totalGrade = 0;
+
+    for (var i = 0; i < grades.list.length; i++) {
+        var grade = grades.list[i];
+
+        // Get input
+        var input = document.getElementById("grade_perc_" + courseKey + i)
+        var scoreInput = input.value;
+        if (scoreInput == null || scoreInput == "")
+            scoreInput = input.placeholder;
+        input.value = Number(scoreInput).toFixed(4);
+
+        // Updated percentage for that assignment
+        var result = document.getElementById("grade_result_" + courseKey + i);
+        result.textContent = "/ " + grade.max.toFixed(4);
+        result.textContent += " = " + Number(scoreInput).toFixed(4);
+
+        // Cummulative score for course
+        totalGrade += scoreInput * grade.weight / grade.max;
+    }
+
+    // Update course code label
+    document.getElementById("g_Label").textContent = courseKey + " course grade: " + formatPercentage(totalGrade);
 }
 
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-export {getGrades, loadCourseGrades};
+export {getGrades, loadCourseGrades, updateTotalGrade};
