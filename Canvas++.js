@@ -225,8 +225,6 @@ document.getElementById("login-button").addEventListener("click", async() => {
         login_output_box.innerHTML += key + ": " + value + "\n";
     }
 
-    loadCanvasExtension();
-
     try {
         await initStorageCache;
         //loadCanvasExtension();  // Does it go here?
