@@ -123,6 +123,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     });
 });
 
+// FUNCTIONS TO UPDATE GLOBAL DICTIONARIES
 function reloadCourseIds(course_ids_string){
     if (course_ids_string){
         let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
@@ -148,6 +149,59 @@ function reloadCourseIds(course_ids_string){
         loadAllCourses();
     } 
 }
+
+function reloadAssignments(assignments_response_string){
+    if (assignments_response_string){
+        let assignments_map = JSON.parse(assignments_response_string);
+        let i = 0;
+        for (let assignment of assignments_map){
+            if (i === 0){
+                assignments["A"] = {name: assignment.name, list: JSON.stringify(assignment)};
+            }
+            if (i === 1){
+                assignments["B"] = {name: assignment.name, list: JSON.stringify(assignment)};
+            }
+            if (i === 2){
+                assignments["C"] = {name: assignment.name, list: JSON.stringify(assignment)};
+            }
+            if (i === 3){
+                assignments["D"] = {name: assignment.name, list: JSON.stringify(assignment)};
+            }
+            i += 1;
+            if (i > 3){
+                break;
+            }
+        }
+        loadAllCourses();
+    } 
+}
+
+function reloadNotifications(notifications_response_string){
+    if (notifications_response_string){
+        let notifications_arr = Object.entries(JSON.parse(notifications_response_string));
+        let i = 0;
+        for (let notification of notifications_arr){
+            if (i === 0){
+                notifications["A"] = {name: notification.type, list: JSON.stringify(notification)};
+            }
+            if (i === 1){
+                notifications["B"] = {name: notification.type, list: JSON.stringify(notification)};
+            }
+            if (i === 2){
+                notifications["C"] = {name: notification.type, list: JSON.stringify(notification)};
+            }
+            if (i === 3){
+                notifications["D"] = {name: notification.type, list: JSON.stringify(notification)};
+            }
+            i += 1;
+            if (i > 3){
+                break;
+            }
+        }
+        loadAllCourses();
+    } 
+}
+
 
 // SUBMIT AND SAVE TOKEN TO CHROME STORAGE (IN LOGIN TAB)
 /* NOTE: Below function is weird to have in main .js file, but necessary since  
@@ -231,7 +285,7 @@ document.getElementById("login-button").addEventListener("click", async() => {
     let course_id_map = await getCourseIDs(login_output);
 
     for (let [key, value] of course_id_map) {
-        //console.log(key + ": " + value + "\n");
+        console.log(key + ": " + value + "\n");
         login_output_box.innerHTML += key + ": " + value + "\n";
     }
 
@@ -246,6 +300,16 @@ document.getElementById("login-button").addEventListener("click", async() => {
     storageCache.course_ids = JSON.stringify(map_obj);
     // UPDATE GLOBAL DICTIONARIES
     reloadCourseIds(storageCache.course_ids);
+
+    let assignments = await getAssignments(global_url, global_options, global_token, "CS 422", course_id_map.get("CS 422"));
+    let assignments_string = JSON.stringify(assignments);
+    console.log("Logging assignments string in login button function call...");
+    console.log(assignments_string);
+    reloadAssignments(assignments_string);
+    console.log("Logging notifications string in login button function call...");
+    let notifications_string = await getNotifications(global_url, global_options, global_token, course_id_map.get("CS 422"));
+    console.log(notifications_string);
+    reloadNotifications(notifications_string);
     storageCache.count += 1;
     console.log("Logging storageCache in Canvas++.js after login() call, below should have courseIDs");
     console.log(storageCache);

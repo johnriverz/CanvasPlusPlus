@@ -89,6 +89,7 @@ function loadCourseNotifications(courseKey, notifications) {
         list += "</div>";
     }
 
+
     // Render list
     document.getElementById("notifications_list").innerHTML = list;
 
