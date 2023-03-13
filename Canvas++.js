@@ -6,18 +6,14 @@ file, the 3 other .js files will only hold the functions to be called.
 */
 
 // IMPORTS
-import {login} from "./login.js"
+import {login, getCourseIDs} from "./login.js"
 import {getAssignments, loadCourseAssignments} from "./assignments.js"
 import {getNotifications, loadCourseNotifications} from "./notifications.js"
 import {getGrades, loadCourseGrades, updateTotalGrade} from "./grade_calculator.js"
 
 
-// SETUP MAIN VARIABLES - Create global API Call variables with initCall
+/// SETUP AND MANAGE GLOBAL VARIABLES
 
-// SETUP MAIN VARIABLES - Initialize variables needed to access Canvas API via HTML requests
-
-// validates calls to Canvas API for user's data
-//const global_access = "access_token=" + global_token;
 // important url that will prepend an
 // "Access-Control-Allow-Origin" onto the CANVAS API response's header
 // See: https://stackoverflow.com/questions/43262121/trying-to-use-fetch-and-pass-in-mode-no-cors
@@ -25,38 +21,58 @@ const cors_url = "https://cors-anywhere.herokuapp.com/";
 // specify the host url
 const base_url = "https://canvas.instructure.com/api/v1";
 // header(s)
-var header = {};
-const global_options = {
-   method: 'GET'
-};
+//const header = {"Authorization" : "Bearer " + access_token};
 // complete URL for API call request
 const global_url = cors_url + base_url;
 
+const not_url = cors_url + "https://canvas.instructure.com:443/api/v1";
 
-// SETUP MAIN VARIABLES - Access Token Stuff
+let global_options = {
+    method: 'GET',
+};
+
+/* Access Token Stuff */
 //Get data from chrome extensions local storage
-let storageCache = { count: 0, token: 0};
+let storageCache = { count: 0, course_ids: 0, token: 0};
 let global_token = storageCache.token;
 
+
 // Asynchronously retrieve data from storage.local, then cache it.
-const initStorageCache = chrome.storage.local.get().then((items) => {
+// We do this once here at the beginning of the script to retrieve
+// values, such as the users Canvas API access token, from the extension's
+// storage from previous sessions, if any exists.
+const initStorageCache = await chrome.storage.local.get().then((items) => {
     // Copy the data retrieved from storage into storageCache.
     Object.assign(storageCache, items);
 
     //TESTING
-    console.log("TEST: in get() - count is : " + storageCache.count +
-    " and token is: " + storageCache.token);
+    console.log("TEST: in initStorageCache - count is : " + storageCache.count +
+        " and token is: " + storageCache.token + " and courseIDs are: " + storageCache.course_ids);
     // Reassign the storageCache actual token value to our global_token
     global_token = storageCache.token;
 });
 
+// Below updates storageCache, which holds each session's values
+// for use in our functions, whenever we modify chrome storage
+chrome.storage.onChanged.addListener((changes, namespace) => {
+    for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
+        console.log(
+            `Storage key "${key}" in namespace "${namespace}" changed.`,
+            `Old value was "${oldValue}", new value is "${newValue}".`
+        );
+    }
+    chrome.storage.local.get().then((items) => {
+        // Copy the data retrieved from storage into storageCache.
+        console.log("Console logging chrome storage items in Canvas++.js upon storage change.");
+        console.log(items);
+        Object.assign(storageCache, items);
+    });
+});
 
-
+// SUBMIT AND SAVE TOKEN TO CHROME STORAGE (IN LOGIN TAB)
 /* NOTE: Below function is weird to have in main .js file, but necessary since
 our main .js file needs to have a global access token for usage in imported functions
 Save canvas access token to chrome extension on click of "submit" button */
-
-// SETUP MAIN VARIABLES - Create global API Call variables with initCall
 document.getElementById("submit-token").onclick = (async () => {
     console.log("TEST: the set count function ran")
     try {
@@ -72,13 +88,9 @@ document.getElementById("submit-token").onclick = (async () => {
     storageCache.token = access_token;
 
     // // Normal action handler logic.
-    // storageCache.count++;
+    storageCache.count++;
     chrome.storage.local.set(storageCache);
     global_token = access_token;
-    header = {"Authorization" : "Bearer " + global_token};
-
-    await login(global_url, header, global_token);
-    //loadCanvasExtension()
 });
 
 
@@ -118,6 +130,97 @@ function showTab(currentTab) {
         }
     }
 }
+
+
+/* LOGIN - Use the access key to authorize your CANVAS API requests. Here's an example: */
+const login_output_box = document.getElementById("test-api-output");
+document.getElementById("login-button").addEventListener("click", async() => {
+    loadCanvasExtension();    // Move to after login
+    let login_output = await login(global_url, global_options, global_token);
+    login_output_box.innerHTML = login_output;
+    let course_id_map = await getCourseIDs(login_output);
+
+    for (let [key, value] of course_id_map) {
+        //console.log(key + ": " + value + "\n");
+        login_output_box.innerHTML += key + ": " + value + "\n";
+    }
+
+    loadCanvasExtension();
+
+    try {
+        await initStorageCache;
+        //loadCanvasExtension();  // Does it go here?
+    } catch (e) {
+        // Handle error that occurred during storage initialization.
+        console.log(e);
+    }
+
+    var map_obj = Object.fromEntries(course_id_map);
+    storageCache.course_ids = JSON.stringify(map_obj);
+    console.log("Logging storageCache in Canvas++.js after login() call, below should have courseIDs");
+    console.log(storageCache);
+    chrome.storage.local.set(storageCache).then(async () => {
+        console.log("Value is set to " + JSON.stringify(storageCache));
+    });
+});
+
+
+/* ASSIGNMENTS - */
+const assignments_output_box = document.getElementById("test-assignments-output");/*
+document.getElementById("assignments-button").addEventListener("click", async() => {
+    let storageCache = await chrome.storage.local.get();
+    let course_ids_string = storageCache.course_ids;
+    console.log("TEST: logging course ids from within assignments-button js");
+    console.log(storageCache);
+    console.log(course_ids_string);
+    let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
+    for (var [key, course_id] of course_ids_map){
+        console.log("In Canvas++.js - assignments button for loop.");
+        console.log("calling getAssignments for course name:" + key + " and id: " + course_id);
+        let ass_output = await getAssignments(global_url, global_options, global_token, course_id);
+        assignments_output_box.innerHTML += ass_output + "\n";
+    }
+});*/
+
+
+/* NOTIFICATIONS - */
+const notifications_output_box = document.getElementById("test-notifications-output"); /*
+document.getElementById("notifications-button").addEventListener("click", async() => {
+    let storageCache = await chrome.storage.local.get();
+    let course_ids_string = storageCache.course_ids;
+    console.log("TEST: logging course ids from within notifcations-button js");
+    console.log(storageCache);
+    console.log(course_ids_string);
+    let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
+    for (var [key, course_id] of course_ids_map){
+        console.log("In Canvas++.js - notifications button for loop.");
+        console.log("calling getNotifications for course name:" + key + " and id: " + course_id);
+        let not_output = await getNotifications(global_url, global_options, global_token, course_id);
+        notifications_output_box.innerHTML += not_output + "\n";
+    }
+}*/
+
+
+/* GRADE CALCULATOR - */
+const grade_calculator_output_box = document.getElementById("test-grades-output");/*
+document.getElementById("grades-button").addEventListener("click", async() => {
+    // storageCache has our info that is stored in chrome.local.storage
+    //let storageCache = await chrome.storage.local.get();
+    let grades_output = await getGrades(global_url, global_options, global_token);
+    grade_calculator_output_box.innerHTML += grades_output + "\n";
+    /*
+    let course_ids_string = storageCache.course_ids;
+    console.log("TEST: logging course ids from within notifcations-button js");
+    console.log(storageCache);
+    console.log(course_ids_string);
+    let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
+    for (var [key, course_id] of course_ids_map){
+        console.log("In Canvas++.js - notifications button for loop.");
+        console.log("calling getNotifications for course name:" + key + " and id: " + course_id);
+        let not_output = await getGrades(global_url, global_options, global_token);
+        notifications_output_box.innerHTML += not_output + "\n";
+    }
+}); */
 
 
 // Stores the data fetched from Canvas
