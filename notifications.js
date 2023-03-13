@@ -68,6 +68,7 @@ async function getNotifications(post_url, options, token, course_id) {
                     console.log(obj[i]);
                 }
                 console.log(obj);
+                return JSON.stringify(obj);
             })
             .catch(e => {
                 console.log(e)
