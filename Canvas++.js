@@ -100,7 +100,7 @@ const initStorageCache = await chrome.storage.local.get().then((items) => {
     //TESTING
     console.log("TEST: in initStorageCache - count is : " + storageCache.count +
         " and token is: " + storageCache.token + " and courseIDs are: " + storageCache.course_ids);
-    reloadCourseIds(items.course_ids);
+    //reloadCourseIds(items.course_ids);
     // Reassign the storageCache actual token value to our global_token
     global_token = storageCache.token;
 });
