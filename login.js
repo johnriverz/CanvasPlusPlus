@@ -1,5 +1,6 @@
 /* login.js */
 
+import {loadCanvasExtension} from "./Canvas++.js";
 // PLACEHOLDER VARIABLES, THESE WILL EVENTUALLY BE PASSED FROM Canvas++.js BUT ARE HERE NOW FOR TESTING
 // UNCOMMENT THEM TO TEST FROM WITHIN THIS JS FILE 
 /* */
@@ -53,8 +54,10 @@ async function login(post_url, options, token) {
                 }
                 throw new Error('ERROR - manually thrown: in fetch');
             }
-            else
+            else{
+                loadCanvasExtension();
                 return response.text();
+            }
             }) 
     // below should return API response as text, or api_output_box_text error message
     //console.log(output);

@@ -80,23 +80,20 @@ async function getNotifications(post_url, options, token, course_id) {
 }
 
 
-function loadCourseAnnouncements(announcements) {
-    var label = document.createElement("p");
-    label.setAttribute("id", "a_Label");
-    label.textContent = "- Announcements -";
+function loadCourseNotifications(courseKey, notifications) {
+    var list = "<p id='n_Label'>- Notifications -</p>";
 
-    var list = "";
-    list += label.outerHTML;
-
-    for (var i = 0; i < announcements.list.length; i++) {
-        list += "<div class='announcement'>";
-        list += "Announcement: " + announcements.list[i];
+    for (var i = 0; i < notifications.list.length; i++) {
+        list += "<div class='notification'>";
+        list += notifications.list[i];
         list += "</div>";
     }
 
-    //console.log(document.getElementById("a_Label"));
+    // Render list
+    document.getElementById("notifications_list").innerHTML = list;
 
-    document.getElementById("assignment_list").innerHTML = list;
+    // Update course code label
+    document.getElementById("n_Label").textContent = "- " + courseKey + " Notifications -";
 }
 
 
@@ -108,4 +105,4 @@ console.log(test_output);
 
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
-export {getNotifications, loadCourseAnnouncements};
+export {getNotifications, loadCourseNotifications};
