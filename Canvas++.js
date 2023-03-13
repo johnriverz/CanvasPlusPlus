@@ -269,7 +269,7 @@ function showTab(currentTab) {
 /* LOGIN - Use the access key to authorize your CANVAS API requests. Here's an example: */
 const login_output_box = document.getElementById("test-api-output");
 document.getElementById("login-button").addEventListener("click", async() => {
-    loadCanvasExtension();    // Move to after login
+    //loadCanvasExtension();    // Move to after login
     let login_output = await login(global_url, global_options, global_token);
     login_output_box.innerHTML = login_output;
     let course_id_map = await getCourseIDs(login_output);
@@ -374,51 +374,7 @@ var courses = {};
 // The id of the course curtrently being viewed
 var currentCourse = null;
 
-// All courses
-var courses = {
-    "AAA": { name: "AAA", id: 0 },
-    "BBB": { name: "BBB", id: 1 },
-    "CCC": { name: "CCC", id: 2 },
-    "DDD": { name: "DDD", id: 3 }
-};
 
-// All assignments
-var assignments = {
-    "AAA": { name: "AAA", list: ["a", "b", "c", "d"] },
-    "BBB": { name: "BBB", list: ["E", "F", "G"] },
-    "CCC": { name: "CCC", list: ["1", "2", "6", "4"] },
-    "DDD": { name: "DDD", list: ["one"] }
-};
-
-var notifications = {
-    "AAA": { name: "AAA", list: ["default text", "badfhdfgnaretjnadg"] },
-    "BBB": { name: "BBB", list: ["none"] },
-    "CCC": { name: "CCC", list: ["filler filler", "loren epsom", "filler filler"] },
-    "DDD": { name: "DDD", list: ["one"] }
-};
-
-var grades = {
-    "AAA": { name: "AAA", list: [
-        {name: "a", score: 0.935, max: 1, weight: 0.2},
-        {name: "b", score: 9.29, max: 10, weight: 0.4},
-        {name: "c", score: 10, max: 10, weight: 0.3},
-        {name: "d", score: 0.9626, max: 1, weight: 0.1}
-    ] },
-    "BBB": { name: "BBB", list: [
-        {name: "E", score: 0.928, max: 1, weight: 0.3},
-        {name: "F", score: 1.8, max: 2, weight: 0.4},
-        {name: "G", score: 0.8392, max: 1, weight: 0.3}
-    ] },
-    "CCC": { name: "CCC", list: [
-        {name: "1", score: 2, max: 2, weight: 0.1},
-        {name: "2", score: 1.01, max: 1, weight: 0.1},
-        {name: "6", score: 2.928, max: 3, weight: 0.3},
-        {name: "4", score: 0.8908, max: 1, weight: 0.5}
-    ] },
-    "DDD": { name: "DDD", list: [
-        {name: "one", score: 0.827, max: 1, weight: 1},
-    ] }
-};
 
 
 function loadCanvasExtension() {
