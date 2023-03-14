@@ -96,6 +96,7 @@
     padding: 12px;
     border: 2px solid #ccc8;
     transition: all 0.5s ease;
+    overflow-wrap: break-word;
 }
 
 .course {
