@@ -1,6 +1,7 @@
 # Canvas++ (Canvas Chrome Extension) **PROTOTYPE**
 ##### CS 422: Software Methodologies
-##### Ethan Aasheim, Alder French, Blake Skelly, Juan Rios, Spike Chen
+##### Created by Ethan Aasheim, Alder French, Blake Skelly, Juan Rios, Spike Chen.
+##### Created Februrary 28, 2023.
 
 ###### NOTE: These instructions are temporary and only for the prototype. There are some weird workarounds to make the prototype function correctly, but this will hopefully be polished in the final version to simplify the setup process. </em></p>
 
