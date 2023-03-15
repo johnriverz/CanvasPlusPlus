@@ -26,7 +26,7 @@ async function getAssignments(post_url, options, token, course, course_id) {
 
     //console.log(key + ": " + value);
     console.log("Upcoming assignments in " + course + ":");
-    const course_url_part = "/courses/" + course_id + "/assignments?bucket=upcoming&";
+    const course_url_part = "/courses/" + course_id + "/assignments?";
     let ass_url = post_url + course_url_part + token_url;
     console.log("Calling the following assignment GET URL from getAssignments:");
     console.log(ass_url);
