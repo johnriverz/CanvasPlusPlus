@@ -64,10 +64,12 @@ async function getNotifications(post_url, options, token, course_id) {
             .then(html => {
                 //alert("Here's the response from the CANVAS API: " + html);
                 obj = JSON.parse(html);
+                /*
                 for (let i = 0; i < obj.length; i++) {
                     console.log(obj[i]);
                 }
                 console.log(obj);
+                */
                 return JSON.stringify(obj);
             })
             .catch(e => {
@@ -80,14 +82,14 @@ async function getNotifications(post_url, options, token, course_id) {
 }
 
 
-function loadCourseNotifications(courseKey, notifications) {
+function loadCourseNotifications(courseName, notifications) {
     var list = "<p id='n_Label'>- Notifications -</p>";
 
-    for (var i = 0; i < notifications.list.length; i++) {
-        list += "<div id='notification" + courseKey + i + "' class='notification'>";
-        list += "<p>" + notifications.list[i] + "</p>";
-        list += "<div id='n-info" + courseKey + i + "' class='closed'>";
-        list += "Date sent, message, (link to Canvas page?)";
+    for (var i = 0; i < notifications.length; i++) {
+        list += "<div id='notification" + courseName + i + "' class='notification'>";
+        list += "<p>" + notifications[i].title + "</p>";
+        list += "<div id='n-info" + courseName + i + "' class='closed'>";
+        list += notifications[i].message;
         list += "</div>";
         list += "</div>";
         list += "</div>";
@@ -98,33 +100,33 @@ function loadCourseNotifications(courseKey, notifications) {
     document.getElementById("notifications_list").innerHTML = list;
 
     // Update course code label
-    document.getElementById("n_Label").textContent = "- " + courseKey + " Notifications -";
+    document.getElementById("n_Label").textContent = "- " + courseName + " Notifications -";
 
     // Add panel click handlers
-    for (var i = 0; i < notifications.list.length; i++) {
-        var panel = document.getElementById("notification" + courseKey + i)
-        panel.addEventListener("click", handlePanelClick(courseKey, notifications.list.length, i));
+    for (var i = 0; i < notifications.length; i++) {
+        var panel = document.getElementById("notification" + courseName + i)
+        panel.addEventListener("click", handlePanelClick(courseName, notifications.length, i));
     }
 }
 
 
 // Handle click on assignment panels
-function handlePanelClick(courseKey, length, index) {
+function handlePanelClick(courseName, length, index) {
     return function() {
-        openNotification(courseKey, length, index);
+        openNotification(courseName, length, index);
     }
 }
 
 
 // Expand the assignment panel
-function openNotification(courseKey, length, index) {
-    var panel = document.getElementById("n-info" + courseKey + index);
+function openNotification(courseName, length, index) {
+    var panel = document.getElementById("n-info" + courseName + index);
     var closed = false;
     if (!panel.classList.contains("closed")) closed = true;
 
     // Close all other panels
     for (var i = 0; i < length; i++) {
-        document.getElementById("n-info" + courseKey + i).setAttribute("class", "closed");
+        document.getElementById("n-info" + courseName + i).setAttribute("class", "closed");
     }
 
     // Expand curent pannel

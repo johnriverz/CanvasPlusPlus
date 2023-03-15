@@ -37,11 +37,9 @@ let global_options = {
 let storageCache = { count: 0, course_ids: 0, token: 0};
 let global_token = storageCache.token;
 
-// Stores the data fetched from Canvas
-var courses = {};
-
-// The id of the course curtrently being viewed
-var currentCourse = null;
+// Dictionaries have dummy data by default
+// All dictionaires are loaded with correct data on login
+// EXCEPT for grades because of a Canvas security plicy
 
 // All courses
 var courses = {
@@ -53,40 +51,40 @@ var courses = {
 
 // All assignments
 var assignments = {
-    "A": { name: "AAA", list: ["a", "b", "c", "d"] },
-    "B": { name: "BBB", list: ["E", "F", "G"] },
-    "C": { name: "CCC", list: ["1", "2", "6", "4"] },
-    "D": { name: "DDD", list: ["one"] }
+    "A": ["a", "b", "c", "d"],
+    "B": ["E", "F", "G"],
+    "C": ["1", "2", "6", "4"],
+    "D": ["one"]
 };
 
 var notifications = {
-    "A": { name: "AAA", list: ["default text", "badfhdfgnaretjnadg"] },
-    "B": { name: "BBB", list: ["none"] },
-    "C": { name: "CCC", list: ["filler filler", "loren epsom", "filler filler"] },
-    "D": { name: "DDD", list: ["one"] }
+    "A": [{title: 1, message: "default text"}, {title: 2, message: "badfhdfgnaretjnadg"}],
+    "B": [{title: 1, message: "none"}],
+    "C": [{title: 1, message: "filler filler"}, {title: 2, message: "loren epsom"}, {title: 3, message: "filler filler"}],
+    "D": [{title: 1, message: "one"}]
 };
 
 var grades = {
-    "A": { name: "AAA", list: [
+    "A": [
         {name: "a", score: 0.935, max: 1, weight: 0.2},
         {name: "b", score: 0.929, max: 1, weight: 0.4},
         {name: "c", score: 1, max: 1, weight: 0.3},
         {name: "d", score: 0.9626, max: 1, weight: 0.1}
-    ] },
-    "B": { name: "BBB", list: [
+    ],
+    "B": [
         {name: "E", score: 0.928, max: 1, weight: 0.3},
         {name: "F", score: 0.8, max: 1, weight: 0.4},
         {name: "G", score: 0.8392, max: 1, weight: 0.3}
-    ] },
-    "C": { name: "CCC", list: [
+    ],
+    "C": [
         {name: "1", score: 1, max: 1, weight: 0.1},
         {name: "2", score: 1.01, max: 1, weight: 0.1},
         {name: "6", score: 0.928, max: 1, weight: 0.3},
         {name: "4", score: 0.8908, max: 1, weight: 0.5}
-    ] },
-    "D": { name: "DDD", list: [
+    ],
+    "D": [
         {name: "one", score: 0.827, max: 1, weight: 1},
-    ] }
+    ]
 };
 
 
@@ -123,28 +121,42 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     });
 });
 
+
+// real grade data from Canvas can't be accesss due to security policies
+var dummyGradeData = [
+    [
+        {name: "a", score: 0.935, max: 1, weight: 0.2},
+        {name: "b", score: 0.929, max: 1, weight: 0.4},
+        {name: "c", score: 1, max: 1, weight: 0.3},
+        {name: "d", score: 0.9626, max: 1, weight: 0.1}
+    ],
+    [
+        {name: "E", score: 0.928, max: 1, weight: 0.3},
+        {name: "F", score: 0.8, max: 1, weight: 0.4},
+        {name: "G", score: 0.8392, max: 1, weight: 0.3}
+    ],
+    [
+        {name: "1", score: 1, max: 1, weight: 0.1},
+        {name: "2", score: 1.01, max: 1, weight: 0.1},
+        {name: "6", score: 0.928, max: 1, weight: 0.3},
+        {name: "4", score: 0.8908, max: 1, weight: 0.5}
+    ],
+    [
+        {name: "one", score: 0.827, max: 1, weight: 1},
+    ]
+]
+
+
 // FUNCTIONS TO UPDATE GLOBAL DICTIONARIES
 function reloadCourseIds(course_ids_string){
     if (course_ids_string){
         let course_ids_map = new Map(Object.entries(JSON.parse(course_ids_string)));
         let i = 0;
         for (var [key, course_id] of course_ids_map){
-            if (i === 0){
-                courses["A"] = {name: key, id: course_id};
-            }
-            if (i === 1){
-                courses["B"] = {name: key, id: course_id};
-            }
-            if (i === 2){
-                courses["C"] = {name: key, id: course_id};
-            }
-            if (i === 3){
-                courses["D"] = {name: key, id: course_id};
-            }
-            i += 1;
-            if (i > 3){
-                break;
-            }
+            courses[course_id] = {name: key, id: course_id};
+            grades[course_id] = dummyGradeData[i]
+            i++;
+            if (i >= dummyGradeData.length) i = 0;
         }
         loadAllCourses();
     }
@@ -154,8 +166,13 @@ function reloadAssignments(assignments_response_string){
     if (assignments_response_string){
         let assignments_map = JSON.parse(assignments_response_string);
         let i = 0;
-        for (let assignment of assignments_map){
-            if (i === 0){
+
+        console.log(assignments_map);
+
+        for (let assignment of assignments_map) {
+          console.log(assignment);
+          console.log(JSON.stringify(assignment));
+            /*if (i === 0){
                 assignments["A"] = {name: assignment.name, list: JSON.stringify(assignment)};
             }
             if (i === 1){
@@ -170,36 +187,25 @@ function reloadAssignments(assignments_response_string){
             i += 1;
             if (i > 3){
                 break;
-            }
+            }*/
         }
         loadAllCourses();
-    } 
+    }
 }
 
 function reloadNotifications(notifications_response_string){
     if (notifications_response_string){
         let notifications_arr = Object.entries(JSON.parse(notifications_response_string));
         let i = 0;
-        for (let notification of notifications_arr){
-            if (i === 0){
-                notifications["A"] = {name: notification.type, list: JSON.stringify(notification)};
-            }
-            if (i === 1){
-                notifications["B"] = {name: notification.type, list: JSON.stringify(notification)};
-            }
-            if (i === 2){
-                notifications["C"] = {name: notification.type, list: JSON.stringify(notification)};
-            }
-            if (i === 3){
-                notifications["D"] = {name: notification.type, list: JSON.stringify(notification)};
-            }
-            i += 1;
-            if (i > 3){
-                break;
-            }
+        var list = [];
+        var notification;
+        for (let notification_obj of notifications_arr) {
+            notification = notification_obj[1]
+            list.push(notification);
         }
+        notifications[notification.course_id] = list;
         loadAllCourses();
-    } 
+    }
 }
 
 
@@ -292,21 +298,25 @@ document.getElementById("login-button").addEventListener("click", async() => {
     // UPDATE GLOBAL DICTIONARIES
     reloadCourseIds(storageCache.course_ids);
 
-    let assignments = await getAssignments(global_url, global_options, global_token, "CS 422", course_id_map.get("CS 422"));
-    let assignments_string = JSON.stringify(assignments);
-    console.log("Logging assignments string in login button function call...");
-    console.log(assignments_string);
-    reloadAssignments(assignments_string);
-    console.log("Logging notifications string in login button function call...");
-    let notifications_string = await getNotifications(global_url, global_options, global_token, course_id_map.get("CS 422"));
-    console.log(notifications_string);
-    reloadNotifications(notifications_string);
-    storageCache.count += 1;
-    console.log("Logging storageCache in Canvas++.js after login() call, below should have courseIDs");
-    console.log(storageCache);
-    chrome.storage.local.set(storageCache).then(async () => {
-        console.log("Value is set to " + JSON.stringify(storageCache));
-    });
+    for (var courseID in courses) {
+        if (courseID.length < 2) continue;
+        var courseName = courses[courseID].name;
+        let assignments = await getAssignments(global_url, global_options, global_token, courseName, course_id_map.get(courseName));
+        let assignments_string = JSON.stringify(assignments);
+        console.log("Logging assignments string in login button function call...");
+        console.log(assignments_string);
+        reloadAssignments(assignments_string);
+        console.log("Logging notifications string in login button function call...");
+        let notifications_string = await getNotifications(global_url, global_options, global_token, course_id_map.get(courseName));
+        //console.log(notifications_string);
+        reloadNotifications(notifications_string);
+        storageCache.count += 1;
+        console.log("Logging storageCache in Canvas++.js after login() call, below should have courseIDs");
+        console.log(storageCache);
+        chrome.storage.local.set(storageCache).then(async () => {
+            console.log("Value is set to " + JSON.stringify(storageCache));
+        });
+    }
 });
 
 
@@ -368,15 +378,6 @@ document.getElementById("grades-button").addEventListener("click", async() => {
 }); */
 
 
-// Stores the data fetched from Canvas
-var courses = {};
-
-// The id of the course curtrently being viewed
-var currentCourse = null;
-
-
-
-
 function loadCanvasExtension() {
     document.getElementById("authed").style.display = "block";
     document.getElementById("login").style.display = "none";
@@ -384,8 +385,6 @@ function loadCanvasExtension() {
     // Add the assignments and notifications for each course
     for (var courseKey in courses) {
         var course = courses[courseKey];
-        //assignments[courseKey] = getAssignments(global_url, global_options, global_token);
-        //notifications[courseKey] = getNotifications(global_url, global_options, global_token);
     }
 
     showTab(1);
@@ -415,6 +414,7 @@ function loadAllCourses() {
 
     // Call loadCourse function with index as argument
     var first = true;
+    console.log(courses);
     for (var courseKey in courses) {
         document.getElementById("course" + courseKey).addEventListener("click", handleCourseClick(courseKey));
 
@@ -443,7 +443,7 @@ function loadCourse(courseKey) {
     }
     var courseButton = document.getElementById("course" + courseKey);
     courseButton.classList.add("selected");
-    console.log(courseButton)
+    //console.log(courseButton)
 
     // Update course code labels
     var a_Label = document.getElementById("a_Label")
@@ -452,15 +452,32 @@ function loadCourse(courseKey) {
     if (n_Label) n_Label.innerHTML = "- " + courseKey + " Notifications -";
 
     // Update course code label for grade calc via this function
-    if (document.getElementById("g_Label") &&
+    if (document.getElementById("g_Label") && courseKey in grades &&
     document.getElementById("grade_perc_" + courseKey + 0)) {
         updateTotalGrade(courseKey, grades[courseKey]);
     }
 
+    /*
+    console.log("break");
+    console.log(assignments);
+    console.log(notifications);
+    console.log(grades);
+    */
+
     // Render appropriate data to each tab
-    loadCourseAssignments(courseKey, assignments[courseKey]);
-    loadCourseNotifications(courseKey, notifications[courseKey]);
-    loadCourseGrades(courseKey, grades[courseKey]);
+    var courseName = courses[courseKey].name;
+
+    // Render assignemnts (if no matching course than dispaly empty window)
+    if (courseKey in assignments) loadCourseAssignments(courseName, assignments[courseKey]);
+    else loadCourseAssignments(courseName, []);
+
+    // Render notifications (if no matching course than dispaly empty window)
+    if (courseKey in notifications) loadCourseNotifications(courseName, notifications[courseKey]);
+    else loadCourseNotifications(courseName, []);
+
+    // Render grades (if no matching course than dispaly empty window)
+    if (courseKey in grades) loadCourseGrades(courseName, grades[courseKey]);
+    else loadCourseGrades(courseName, []);
 }
 
 

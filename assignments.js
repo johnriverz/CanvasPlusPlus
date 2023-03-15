@@ -77,14 +77,14 @@ async function fetchAssignments(ass_url, options){
 }
 
 
-function loadCourseAssignments(courseKey, assignments) {
+function loadCourseAssignments(courseName, assignments) {
     var list = "<p id='a_Label'>- Assignments -</p>";
 
     // Create assignment panel
-    for (var i = 0; i < assignments.list.length; i++) {
-        list += "<div id='assignment" + courseKey + i + "' class='assignment'>";
-        list += "<p>" + assignments.list[i] + "</p>";
-        list += "<div id='a-info" + courseKey + i + "' class='closed'>";
+    for (var i = 0; i < assignments.length; i++) {
+        list += "<div id='assignment" + courseName + i + "' class='assignment'>";
+        list += "<p>" + assignments[i] + "</p>";
+        list += "<div id='a-info" + courseName + i + "' class='closed'>";
         list += "Due date, points worth, (link to submit page?)";
         list += "</div>";
         list += "</div>";
@@ -94,45 +94,39 @@ function loadCourseAssignments(courseKey, assignments) {
     document.getElementById("assignment_list").innerHTML = list;
 
     // Update course code label
-    document.getElementById("a_Label").textContent = "- " + courseKey + " Assignments -";
+    document.getElementById("a_Label").textContent = "- " + courseName + " Assignments -";
 
     // Add panel click handlers
-    for (var i = 0; i < assignments.list.length; i++) {
-        var panel = document.getElementById("assignment" + courseKey + i)
-        panel.addEventListener("click", handlePanelClick(courseKey, assignments.list.length, i));
+    for (var i = 0; i < assignments.length; i++) {
+        var panel = document.getElementById("assignment" + courseName + i)
+        panel.addEventListener("click", handlePanelClick(courseName, assignments.length, i));
     }
 }
 
 
 // Handle click on assignment panels
-function handlePanelClick(courseKey, length, index) {
+function handlePanelClick(courseName, length, index) {
     return function() {
-        openAssignment(courseKey, length, index);
+        openAssignment(courseName, length, index);
     }
 }
 
 
 // Expand the assignment panel
-function openAssignment(courseKey, length, index) {
-    var panel = document.getElementById("a-info" + courseKey + index);
+function openAssignment(courseName, length, index) {
+    var panel = document.getElementById("a-info" + courseName + index);
     var closed = false;
     if (!panel.classList.contains("closed")) closed = true;
 
     // Close all other panels
     for (var i = 0; i < length; i++) {
-        document.getElementById("a-info" + courseKey + i).setAttribute("class", "closed");
+        document.getElementById("a-info" + courseName + i).setAttribute("class", "closed");
     }
 
     // Expand curent pannel
     if (closed);
         panel.setAttribute("class", "a-details");
 }
-
-// TEST FUNCTIONS HERE - UNCOMMENT TO TEST
-/*
-test_output = login(starter_url, options, my_token);
-console.log(test_output);
-*/
 
 
 //EXPORT FUNCTIONS FOR USE IN MAIN .JS FILE
